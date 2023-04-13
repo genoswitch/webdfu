@@ -25,47 +25,47 @@ Basic example:
 import { WebDFU } from "dfu";
 
 async function connect() {
-  // Load the device by WebUSB
-  const selectedDevice = await navigator.usb.requestDevice({ filters: [] });
+	// Load the device by WebUSB
+	const selectedDevice = await navigator.usb.requestDevice({ filters: [] });
 
-  // Create and init the WebDFU instance
-  const webdfu = new WebDFU(selectedDevice, { forceInterfacesName: true });
-  await webdfu.init();
+	// Create and init the WebDFU instance
+	const webdfu = new WebDFU(selectedDevice, { forceInterfacesName: true });
+	await webdfu.init();
 
-  if (webdfu.interfaces.length == 0) {
-    throw new Error("The selected device does not have any USB DFU interfaces.");
-  }
+	if (webdfu.interfaces.length == 0) {
+		throw new Error("The selected device does not have any USB DFU interfaces.");
+	}
 
-  // Connect to first device interface
-  await webdfu.connect(0);
+	// Connect to first device interface
+	await webdfu.connect(0);
 
-  console.log({
-    Version: webdfu.properties.DFUVersion.toString(16),
-    CanUpload: webdfu.properties.CanUpload,
-    CanDownload: webdfu.properties.CanDownload,
-    TransferSize: webdfu.properties.TransferSize,
-    DetachTimeOut: webdfu.properties.DetachTimeOut,
-  });
+	console.log({
+		Version: webdfu.properties.DFUVersion.toString(16),
+		CanUpload: webdfu.properties.CanUpload,
+		CanDownload: webdfu.properties.CanDownload,
+		TransferSize: webdfu.properties.TransferSize,
+		DetachTimeOut: webdfu.properties.DetachTimeOut,
+	});
 
-  // Read firmware from device
-  try {
-    const firmwareFile = await webdfu.read();
+	// Read firmware from device
+	try {
+		const firmwareFile = await webdfu.read();
 
-    console.log("Read: ", firmwareFile);
-  } catch (error) {
-    console.error(error);
-  }
+		console.log("Read: ", firmwareFile);
+	} catch (error) {
+		console.error(error);
+	}
 
-  // Write firmware in device
-  try {
-    // Your firmware in binary mode
-    const firmwareFile = new ArrayBuffer("");
-    await webdfu.write(1024, firmwareFile);
+	// Write firmware in device
+	try {
+		// Your firmware in binary mode
+		const firmwareFile = new ArrayBuffer("");
+		await webdfu.write(1024, firmwareFile);
 
-    console.log("Written!");
-  } catch (error) {
-    console.error(error);
-  }
+		console.log("Written!");
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 /*
