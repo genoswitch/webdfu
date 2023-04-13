@@ -11,13 +11,13 @@ import {
 	WebDFUInterfaceDescriptor,
 	parseMemoryDescriptor,
 	DFUseMemorySegment,
-	DFUseCommands,
 } from "./core";
 import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./process";
 import { parseConfigurationDescriptor, WebDFUError } from "./core";
 
 import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
+import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
 
 export * from "./core";
 
@@ -774,7 +774,7 @@ export class WebDFU {
 			let bytes_written = 0;
 			let dfu_status;
 			try {
-				await this.dfuseCommand(DFUseCommands.SET_ADDRESS, address, 4);
+				await this.dfuseCommand(DfuSeRequestCommand.SET_ADDRESS_PTR, address, 4);
 				bytes_written = await this.download(data.slice(bytes_sent, bytes_sent + chunk_size), 2);
 				dfu_status = await this.poll_until_idle(DFUDeviceState.dfuDNLOAD_IDLE);
 				address += chunk_size;
@@ -796,7 +796,7 @@ export class WebDFU {
 		process.events.emit("write/end", bytes_sent);
 
 		try {
-			await this.dfuseCommand(DFUseCommands.SET_ADDRESS, startAddress, 4);
+			await this.dfuseCommand(DfuSeRequestCommand.SET_ADDRESS_PTR, startAddress, 4);
 			await this.download(new ArrayBuffer(0), 0);
 		} catch (error) {
 			throw new WebDFUError("Error during DfuSe manifestation: " + error);
@@ -825,7 +825,7 @@ export class WebDFU {
 		if (state != DFUDeviceState.dfuIDLE) {
 			await this.abortToIdle();
 		}
-		await this.dfuseCommand(DFUseCommands.SET_ADDRESS, startAddress, 4);
+		await this.dfuseCommand(DfuSeRequestCommand.SET_ADDRESS_PTR, startAddress, 4);
 		await this.abortToIdle();
 
 		// DfuSe encodes the read address based on the transfer size,
@@ -941,7 +941,7 @@ export class WebDFU {
 				} else {
 					const sectorIndex = Math.floor((addr - segment.start) / segment.sectorSize);
 					const sectorAddr = segment.start + sectorIndex * segment.sectorSize;
-					await that.dfuseCommand(DFUseCommands.ERASE_SECTOR, sectorAddr, 4);
+					await that.dfuseCommand(DfuSeRequestCommand.ERASE_SECTOR, sectorAddr, 4);
 					addr = sectorAddr + segment.sectorSize;
 					bytesErased += segment.sectorSize;
 				}
@@ -957,9 +957,9 @@ export class WebDFU {
 
 	private async dfuseCommand(command: number, param = 0x00, len = 1) {
 		const commandNames: Record<number, string> = {
-			[DFUseCommands.GET_COMMANDS]: "GET_COMMANDS",
-			[DFUseCommands.SET_ADDRESS]: "SET_ADDRESS",
-			[DFUseCommands.ERASE_SECTOR]: "ERASE_SECTOR",
+			[DfuSeRequestCommand.GET_COMMAND]: "GET_COMMANDS",
+			[DfuSeRequestCommand.SET_ADDRESS_PTR]: "SET_ADDRESS",
+			[DfuSeRequestCommand.ERASE_SECTOR]: "ERASE_SECTOR",
 		};
 
 		let payload = new ArrayBuffer(len + 1);

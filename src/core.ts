@@ -8,12 +8,6 @@ export type DFUseMemorySegment = {
 	writable: boolean;
 };
 
-export enum DFUseCommands {
-	GET_COMMANDS = 0x00,
-	SET_ADDRESS = 0x21,
-	ERASE_SECTOR = 0x41,
-}
-
 export type WebDFUSettings = {
 	name?: string;
 	configuration: USBConfiguration;
