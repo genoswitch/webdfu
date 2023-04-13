@@ -17,18 +17,11 @@ import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./pro
 import { parseConfigurationDescriptor, WebDFUError } from "./core";
 
 import { DFUDeviceState } from "./protocol/transfer/deviceState";
+import { DFUClassSpecificRequest } from "./protocol/requests/classSpecificRequest";
 
 export * from "./core";
 
 export const dfuCommands = {
-	DETACH: 0x00,
-	DOWNLOAD: 0x01,
-	UPLOAD: 0x02,
-	GETSTATUS: 0x03,
-	CLRSTATUS: 0x04,
-	GETSTATE: 0x05,
-	ABORT: 0x06,
-
 	STATUS_OK: 0x0,
 };
 
@@ -419,11 +412,11 @@ export class WebDFU {
 	}
 
 	detach() {
-		return this.requestOut(dfuCommands.DETACH, undefined, 1000);
+		return this.requestOut(DFUClassSpecificRequest.DFU_DETACH, undefined, 1000);
 	}
 
 	abort() {
-		return this.requestOut(dfuCommands.ABORT);
+		return this.requestOut(DFUClassSpecificRequest.DFU_ABORT);
 	}
 
 	async waitDisconnected(timeout: number) {
@@ -475,14 +468,14 @@ export class WebDFU {
 	}
 
 	getState() {
-		return this.requestIn(dfuCommands.GETSTATE, 1).then(
+		return this.requestIn(DFUClassSpecificRequest.DFU_GETSTATE, 1).then(
 			data => Promise.resolve(data.getUint8(0)),
 			error => Promise.reject("DFU GETSTATE failed: " + error)
 		);
 	}
 
 	getStatus() {
-		return this.requestIn(dfuCommands.GETSTATUS, 6).then(
+		return this.requestIn(DFUClassSpecificRequest.DFU_GETSTATUS, 6).then(
 			data =>
 				Promise.resolve({
 					status: data.getUint8(0),
@@ -494,7 +487,7 @@ export class WebDFU {
 	}
 
 	clearStatus() {
-		return this.requestOut(dfuCommands.CLRSTATUS);
+		return this.requestOut(DFUClassSpecificRequest.DFU_CLRSTATUS);
 	}
 
 	/* Driver options */
@@ -553,11 +546,11 @@ export class WebDFU {
 	}
 
 	private download(data: ArrayBuffer, blockNum: number) {
-		return this.requestOut(dfuCommands.DOWNLOAD, data, blockNum);
+		return this.requestOut(DFUClassSpecificRequest.DFU_DNLOAD, data, blockNum);
 	}
 
 	private upload(length: number, blockNum: number) {
-		return this.requestIn(dfuCommands.UPLOAD, length, blockNum);
+		return this.requestIn(DFUClassSpecificRequest.DFU_UPLOAD, length, blockNum);
 	}
 
 	// IDLE
