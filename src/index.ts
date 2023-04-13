@@ -16,6 +16,8 @@ import {
 import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./process";
 import { parseConfigurationDescriptor, WebDFUError } from "./core";
 
+import { DFUDeviceState } from "./protocol/transfer/deviceState";
+
 export * from "./core";
 
 export const dfuCommands = {
@@ -26,19 +28,6 @@ export const dfuCommands = {
 	CLRSTATUS: 0x04,
 	GETSTATE: 0x05,
 	ABORT: 0x06,
-
-	appIDLE: 0,
-	appDETACH: 1,
-
-	dfuIDLE: 2,
-	dfuDOWNLOAD_SYNC: 3,
-	dfuDNBUSY: 4,
-	dfuDOWNLOAD_IDLE: 5,
-	dfuMANIFEST_SYNC: 6,
-	dfuMANIFEST: 7,
-	dfuMANIFEST_WAIT_RESET: 8,
-	dfuUPLOAD_IDLE: 9,
-	dfuERROR: 10,
 
 	STATUS_OK: 0x0,
 };
@@ -479,7 +468,7 @@ export class WebDFU {
 				return true;
 			}
 
-			return state?.state == dfuCommands.dfuERROR;
+			return state?.state == DFUDeviceState.dfuERROR;
 		} catch (_) {
 			return true;
 		}
@@ -575,11 +564,11 @@ export class WebDFU {
 	private async abortToIdle() {
 		await this.abort();
 		let state = await this.getState();
-		if (state == dfuCommands.dfuERROR) {
+		if (state == DFUDeviceState.dfuERROR) {
 			await this.clearStatus();
 			state = await this.getState();
 		}
-		if (state != dfuCommands.dfuIDLE) {
+		if (state != DFUDeviceState.dfuIDLE) {
 			throw new WebDFUError("Failed to return to idle state after abort: state " + state);
 		}
 	}
@@ -593,7 +582,7 @@ export class WebDFU {
 			});
 		}
 
-		while (!state_predicate(dfu_status.state) && dfu_status.state != dfuCommands.dfuERROR) {
+		while (!state_predicate(dfu_status.state) && dfu_status.state != DFUDeviceState.dfuERROR) {
 			await async_sleep(dfu_status.pollTimeout);
 			dfu_status = await this.getStatus();
 		}
@@ -664,7 +653,7 @@ export class WebDFU {
 					data.slice(bytes_sent, bytes_sent + chunk_size),
 					transaction++
 				);
-				dfu_status = await this.poll_until_idle(dfuCommands.dfuDOWNLOAD_IDLE);
+				dfu_status = await this.poll_until_idle(DFUDeviceState.dfuDNLOAD_IDLE);
 			} catch (error) {
 				throw new WebDFUError("Error during DFU download: " + error);
 			}
@@ -695,10 +684,10 @@ export class WebDFU {
 				// Wait until it returns to idle.
 				// If it's not really manifestation tolerant, it might transition to MANIFEST_WAIT_RESET
 				dfu_status = await this.poll_until(
-					state => state == dfuCommands.dfuIDLE || state == dfuCommands.dfuMANIFEST_WAIT_RESET
+					state => state == DFUDeviceState.dfuIDLE || state == DFUDeviceState.dfuMANIFEST_WAIT_RESET
 				);
 
-				// if dfu_status.state == dfuCommands.dfuMANIFEST_WAIT_RESET
+				// if dfu_status.state == DFUDeviceState.dfuMANIFEST_WAIT_RESET
 				// => Device transitioned to MANIFEST_WAIT_RESET even though it is manifestation tolerant
 
 				if (dfu_status.status != dfuCommands.STATUS_OK) {
@@ -794,7 +783,7 @@ export class WebDFU {
 			try {
 				await this.dfuseCommand(DFUseCommands.SET_ADDRESS, address, 4);
 				bytes_written = await this.download(data.slice(bytes_sent, bytes_sent + chunk_size), 2);
-				dfu_status = await this.poll_until_idle(dfuCommands.dfuDOWNLOAD_IDLE);
+				dfu_status = await this.poll_until_idle(DFUDeviceState.dfuDNLOAD_IDLE);
 				address += chunk_size;
 			} catch (error) {
 				throw new WebDFUError("Error during DfuSe download: " + error);
@@ -820,7 +809,7 @@ export class WebDFU {
 			throw new WebDFUError("Error during DfuSe manifestation: " + error);
 		}
 
-		await this.poll_until(state => state == dfuCommands.dfuMANIFEST);
+		await this.poll_until(state => state == DFUDeviceState.dfuMANIFEST);
 	}
 
 	private async do_dfuse_read(process: WebDFUProcessRead, xfer_size: number, max_size = Infinity) {
@@ -840,7 +829,7 @@ export class WebDFU {
 		}
 
 		let state = await this.getState();
-		if (state != dfuCommands.dfuIDLE) {
+		if (state != DFUDeviceState.dfuIDLE) {
 			await this.abortToIdle();
 		}
 		await this.dfuseCommand(DFUseCommands.SET_ADDRESS, startAddress, 4);
@@ -999,7 +988,7 @@ export class WebDFU {
 			);
 		}
 
-		let status = await this.poll_until(state => state != dfuCommands.dfuDNBUSY);
+		let status = await this.poll_until(state => state != DFUDeviceState.dfuDNBUSY);
 
 		if (status.status != dfuCommands.STATUS_OK) {
 			throw new WebDFUError("Special DfuSe command " + command + " failed");
