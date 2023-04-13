@@ -2,7 +2,7 @@ import ts from "rollup-plugin-ts";
 import { terser } from "rollup-plugin-terser";
 
 export default {
-  input: "./index.ts",
+  input: "./src/index.ts",
   output: [
     {
       file: "./dist/index.cjs",
