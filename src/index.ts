@@ -16,8 +16,8 @@ import {
 import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./process";
 import { parseConfigurationDescriptor, WebDFUError } from "./core";
 
-import { DFUDeviceState } from "./protocol/transfer/deviceState";
-import { DFUClassSpecificRequest } from "./protocol/requests/classSpecificRequest";
+import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
+import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 
 export * from "./core";
 
