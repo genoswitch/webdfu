@@ -1,5 +1,5 @@
 import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
-import { DfuSeMemorySegment } from "./types/dfuse/MemorySegment";
+import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 
 import { USBDeviceDescriptor } from "./types/usb/deviceDescriptor";
 

@@ -17,7 +17,7 @@ import { parseConfigurationDescriptor, WebDFUError } from "./core";
 import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
-import { DfuSeMemorySegment } from "./types/dfuse/MemorySegment";
+import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 
 export * from "./core";
 
