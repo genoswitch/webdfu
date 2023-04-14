@@ -29,8 +29,10 @@ export enum DFUVersion {
 
 	/**
 	 * **DFU Version 1.1.**
+	 *
+	 * `0x0110` seems to be the 'proper' version, it is used by dfu-util as the value set when forcing DFU 1.1.
 	 */
-	DFU_1_1 = 0x0110, // seen this about
+	DFU_1_1 = 0x0110,
 
 	/**
 	 * **ST 'DfuSe' Version 1.1a.**
@@ -40,6 +42,8 @@ export enum DFUVersion {
 	 * However, when expanding the functionality of the protocol ST broke the DFU 1.1 standard.
 	 *
 	 * Therefore, DfuSe compatible devices report the DFU version as `1.1a`.
+	 *
+	 * More information about DfuSe can be found on the [`dfu-util` SourceForge site](https://dfu-util.sourceforge.net/dfuse.html).
 	 */
 	DfuSe = 0x011a,
 }
