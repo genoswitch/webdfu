@@ -25,11 +25,12 @@ export type USBDeviceDescriptor = {
 
 	/**
 	 * **Class code (assigned by the USB-IF).**
+	 *
 	 * The USB Class Codes are defined [here.](https://www.usb.org/defined-class-codes).
 	 *
 	 * `0xEF` is Miscellaneous (including DFU).
 	 * `0xFE` is Application-specific
-	 * `0xFF` is Class-specific
+	 * `0xFF` is Vendor-specific
 	 *
 	 * If this field is reset to zero, each interface within a configuration
 	 * specifies its own class information and the various interfaces operate independently.
