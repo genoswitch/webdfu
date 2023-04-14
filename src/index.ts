@@ -80,7 +80,8 @@ export class WebDFU {
 		}
 
 		this.currentInterfaceSettings = intrf;
-		if (this.currentInterfaceSettings.name) {
+		// The memory descriptor is a DFuSe-only feature - do not attempt to parse it if we are not using a DFuSe compatible device.
+		if (this.currentInterfaceSettings.name && this.type == WebDFUType.SDFUse) {
 			this.dfuseMemoryInfo = parseMemoryDescriptor(this.currentInterfaceSettings.name);
 		}
 
