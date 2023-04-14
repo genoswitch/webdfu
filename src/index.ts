@@ -10,7 +10,6 @@ import {
 	WebDFUInterfaceSubDescriptor,
 	WebDFUInterfaceDescriptor,
 	parseMemoryDescriptor,
-	DFUseMemorySegment,
 } from "./core";
 import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./process";
 import { parseConfigurationDescriptor, WebDFUError } from "./core";
@@ -18,6 +17,7 @@ import { parseConfigurationDescriptor, WebDFUError } from "./core";
 import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
+import { DfuSeMemorySegment } from "./types/dfuse/MemorySegment";
 
 export * from "./core";
 
@@ -34,7 +34,7 @@ export class WebDFU {
 	connected: boolean = false;
 
 	dfuseStartAddress: number = NaN;
-	dfuseMemoryInfo?: { name: string; segments: DFUseMemorySegment[] };
+	dfuseMemoryInfo?: { name: string; segments: DfuSeMemorySegment[] };
 	currentInterfaceSettings?: WebDFUSettings;
 
 	constructor(
@@ -834,7 +834,7 @@ export class WebDFU {
 		return await this.do_read(process, xfer_size, max_size, 2);
 	}
 
-	getDfuseSegment(addr: number): DFUseMemorySegment | null {
+	getDfuseSegment(addr: number): DfuSeMemorySegment | null {
 		if (!this.dfuseMemoryInfo || !this.dfuseMemoryInfo.segments) {
 			throw new WebDFUError("No memory map information available");
 		}
@@ -889,7 +889,7 @@ export class WebDFU {
 		return numBytes;
 	}
 
-	private getDfuseSectorStart(addr: number, segment: DFUseMemorySegment | null) {
+	private getDfuseSectorStart(addr: number, segment: DfuSeMemorySegment | null) {
 		if (typeof segment === "undefined") {
 			segment = this.getDfuseSegment(addr);
 		}

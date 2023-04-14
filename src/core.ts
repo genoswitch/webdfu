@@ -1,12 +1,4 @@
-export type DFUseMemorySegment = {
-	start: number;
-	end: number;
-	sectorSize: number;
-
-	readable: boolean;
-	erasable: boolean;
-	writable: boolean;
-};
+import { DfuSeMemorySegment } from "./types/dfuse/MemorySegment";
 
 export type WebDFUSettings = {
 	name?: string;
@@ -98,7 +90,7 @@ export class WebDFUError extends Error {}
 // Parse descriptors
 export function parseMemoryDescriptor(desc: string): {
 	name: string;
-	segments: DFUseMemorySegment[];
+	segments: DfuSeMemorySegment[];
 } {
 	const nameEndIndex = desc.indexOf("/");
 	if (!desc.startsWith("@") || nameEndIndex == -1) {
