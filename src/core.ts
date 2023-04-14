@@ -1,3 +1,4 @@
+import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 import { DfuSeMemorySegment } from "./types/dfuse/MemorySegment";
 
 import { USBDeviceDescriptor } from "./types/usb/deviceDescriptor";
@@ -7,15 +8,6 @@ export type WebDFUSettings = {
 	configuration: USBConfiguration;
 	interface: USBInterface;
 	alternate: USBAlternateInterface;
-};
-
-export type WebDFUFunctionalDescriptor = {
-	bLength: number;
-	bDescriptorType: number;
-	bmAttributes: number;
-	wDetachTimeOut: number;
-	wTransferSize: number;
-	bcdDFUVersion: number;
 };
 
 export type WebDFUInterfaceDescriptor = {
@@ -28,7 +20,7 @@ export type WebDFUInterfaceDescriptor = {
 	bInterfaceSubClass: number;
 	bInterfaceProtocol: number;
 	iInterface: number;
-	descriptors: (WebDFUFunctionalDescriptor | WebDFUInterfaceSubDescriptor)[];
+	descriptors: (DFUFunctionalDescriptor | WebDFUInterfaceSubDescriptor)[];
 };
 
 export type WebDFUInterfaceSubDescriptor = {
@@ -144,7 +136,7 @@ export function parseDeviceDescriptor(data: DataView): USBDeviceDescriptor {
 	};
 }
 
-export function parseFunctionalDescriptor(data: DataView): WebDFUFunctionalDescriptor {
+export function parseFunctionalDescriptor(data: DataView): DFUFunctionalDescriptor {
 	return {
 		bLength: data.getUint8(0),
 		bDescriptorType: data.getUint8(1),
