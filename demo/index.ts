@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { WebDFUType, WebDFU } from "dfu/index";
+import { WebDFUType, WebDFU } from "dfu/src/index";
 
 import { clearLog, logError, logInfo, logProgress, logWarning, setLogContext } from "./log";
 
