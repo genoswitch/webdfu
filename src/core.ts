@@ -1,27 +1,12 @@
 import { DfuSeMemorySegment } from "./types/dfuse/MemorySegment";
 
+import { USBDeviceDescriptor } from "./types/usb/deviceDescriptor";
+
 export type WebDFUSettings = {
 	name?: string;
 	configuration: USBConfiguration;
 	interface: USBInterface;
 	alternate: USBAlternateInterface;
-};
-
-export type WebDFUDeviceDescriptor = {
-	bLength: number;
-	bDescriptorType: number;
-	bcdUSB: number;
-	bDeviceClass: number;
-	bDeviceSubClass: number;
-	bDeviceProtocol: number;
-	bMaxPacketSize: number;
-	idVendor: number;
-	idProduct: number;
-	bcdDevice: number;
-	iManufacturer: number;
-	iProduct: number;
-	iSerialNumber: number;
-	bNumConfigurations: number;
 };
 
 export type WebDFUFunctionalDescriptor = {
@@ -140,7 +125,7 @@ export function parseMemoryDescriptor(desc: string): {
 	return { name, segments };
 }
 
-export function parseDeviceDescriptor(data: DataView): WebDFUDeviceDescriptor {
+export function parseDeviceDescriptor(data: DataView): USBDeviceDescriptor {
 	return {
 		bLength: data.getUint8(0),
 		bDescriptorType: data.getUint8(1),
@@ -148,7 +133,7 @@ export function parseDeviceDescriptor(data: DataView): WebDFUDeviceDescriptor {
 		bDeviceClass: data.getUint8(4),
 		bDeviceSubClass: data.getUint8(5),
 		bDeviceProtocol: data.getUint8(6),
-		bMaxPacketSize: data.getUint8(7),
+		bMaxPacketSize0: data.getUint8(7),
 		idVendor: data.getUint16(8, true),
 		idProduct: data.getUint16(10, true),
 		bcdDevice: data.getUint16(12, true),
