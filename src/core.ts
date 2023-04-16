@@ -57,11 +57,6 @@ export type WebDFULog = Record<"info" | "warning", (msg: string) => void> & {
 	progress: (done: number, total?: number) => void;
 };
 
-export const WebDFUType: Record<"DFU" | "SDFUse", number> = {
-	DFU: 1,
-	SDFUse: 2,
-};
-
 export class WebDFUError extends Error {}
 
 // Parse descriptors

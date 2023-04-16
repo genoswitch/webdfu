@@ -1,5 +1,7 @@
 import { saveAs } from "file-saver";
-import { WebDFUType, WebDFU } from "dfu/src/index";
+import { WebDFU } from "dfu/src/index";
+
+import { DFUVersion } from "../src/protocol/version";
 
 import { clearLog, logError, logInfo, logProgress, logWarning, setLogContext } from "./log";
 
@@ -145,7 +147,7 @@ async function connect(interfaceIndex: number) {
 			}
 		}
 
-		if (webdfu.type === WebDFUType.SDFUse) {
+		if (webdfu.type === DFUVersion.DfuSe) {
 			if (webdfu.dfuseMemoryInfo) {
 				let totalSize = 0;
 				for (const segment of webdfu.dfuseMemoryInfo.segments) {
@@ -210,7 +212,7 @@ async function connect(interfaceIndex: number) {
 		firmwareFileField.disabled = false;
 	}
 
-	if (webdfu.type === WebDFUType.SDFUse && webdfu.dfuseMemoryInfo) {
+	if (webdfu.type === DFUVersion.DfuSe && webdfu.dfuseMemoryInfo) {
 		const dfuseFieldsDiv = document.querySelector("#dfuseFields") as HTMLDivElement;
 		dfuseFieldsDiv.hidden = false;
 		dfuseStartAddressField.disabled = false;
@@ -240,11 +242,11 @@ dfuseStartAddressField.addEventListener("change", function (event) {
 	const address = parseInt(field.value, 16);
 	if (isNaN(address)) {
 		field.setCustomValidity("Invalid hexadecimal start address");
-	} else if (webdfu && webdfu.type === WebDFUType.SDFUse && webdfu?.dfuseMemoryInfo) {
+	} else if (webdfu && webdfu.type === DFUVersion.DfuSe && webdfu?.dfuseMemoryInfo) {
 		if (webdfu.getDfuseSegment(address) !== null) {
 			webdfu.dfuseStartAddress = address;
 			field.setCustomValidity("");
-			if (webdfu && webdfu.type === WebDFUType.SDFUse) {
+			if (webdfu && webdfu.type === DFUVersion.DfuSe) {
 				dfuseUploadSizeField.max = webdfu.getDfuseMaxReadSize(address).toString();
 			}
 		} else {
@@ -324,7 +326,7 @@ uploadButton.addEventListener("click", async function (event) {
 		const process = webdfu.read(transferSize, maxSize);
 
 		// after start
-		if (webdfu?.type === WebDFUType.SDFUse) {
+		if (webdfu?.type === DFUVersion.DfuSe) {
 			logInfo(
 				`Reading up to 0x${maxSize.toString(
 					16

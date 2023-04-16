@@ -5,7 +5,6 @@ import {
 	WebDFUEvent,
 	WebDFUOptions,
 	WebDFUProperties,
-	WebDFUType,
 	WebDFULog,
 	WebDFUInterfaceSubDescriptor,
 	WebDFUInterfaceDescriptor,
@@ -18,6 +17,7 @@ import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
 import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
+import { DFUVersion } from "./protocol/version";
 
 export * from "./core";
 
@@ -43,15 +43,24 @@ export class WebDFU {
 		private readonly log: WebDFULog
 	) {}
 
+	// NOTE: Is there a better way to do this?
+	// We could also check the interfaceProtocol and interfaceSubClass.
 	get type(): number {
 		if (
-			this.properties?.DFUVersion == 0x011a &&
+			this.properties?.DFUVersion == DFUVersion.DfuSe &&
 			this.currentInterfaceSettings?.alternate.interfaceProtocol == 0x02
 		) {
-			return WebDFUType.SDFUse;
+			return DFUVersion.DfuSe;
+		} else if (this.properties?.DFUVersion == DFUVersion.DFU_1_1) {
+			// 0x0110
+			return DFUVersion.DFU_1_1;
+		} else if (this.properties?.DFUVersion == DFUVersion.DFU_1_1_ALT) {
+			// 0x0101
+			return DFUVersion.DFU_1_1_ALT;
 		}
 
-		return WebDFUType.DFU;
+		// Fallback to DFU 1.0
+		return DFUVersion.DFU_1_0;
 	}
 
 	async init(): Promise<void> {
@@ -81,7 +90,7 @@ export class WebDFU {
 
 		this.currentInterfaceSettings = intrf;
 		// The memory descriptor is a DFuSe-only feature - do not attempt to parse it if we are not using a DFuSe compatible device.
-		if (this.currentInterfaceSettings.name && this.type == WebDFUType.SDFUse) {
+		if (this.currentInterfaceSettings.name && this.type == DFUVersion.DfuSe) {
 			this.dfuseMemoryInfo = parseMemoryDescriptor(this.currentInterfaceSettings.name);
 		}
 
@@ -113,7 +122,7 @@ export class WebDFU {
 
 		try {
 			let blob: Promise<Blob>;
-			if (this.type === WebDFUType.SDFUse) {
+			if (this.type === DFUVersion.DfuSe) {
 				blob = this.do_dfuse_read(process, xferSize, maxSize);
 			} else {
 				blob = this.do_read(process, xferSize, maxSize);
@@ -140,7 +149,7 @@ export class WebDFU {
 			try {
 				let result: Promise<void>;
 
-				if (this.type === WebDFUType.SDFUse) {
+				if (this.type === DFUVersion.DfuSe) {
 					result = this.do_dfuse_write(process, xfer_size, data);
 				} else {
 					result = this.do_write(process, xfer_size, data, manifestationTolerant);
