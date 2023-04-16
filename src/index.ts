@@ -7,7 +7,6 @@ import {
 	WebDFUProperties,
 	WebDFULog,
 	WebDFUInterfaceSubDescriptor,
-	WebDFUInterfaceDescriptor,
 	parseMemoryDescriptor,
 } from "./core";
 import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./process";
@@ -18,6 +17,7 @@ import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRe
 import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
 import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 import { DFUVersion } from "./protocol/version";
+import { USBInterfaceDescriptor } from "./types/usb/interfaceDescriptor";
 
 export * from "./core";
 
@@ -324,7 +324,7 @@ export class WebDFU {
 			// Retrieve string indices for interface names
 			for (let desc of configDesc.descriptors) {
 				if (desc.bDescriptorType === DT_INTERFACE) {
-					desc = desc as WebDFUInterfaceDescriptor;
+					desc = desc as USBInterfaceDescriptor;
 
 					if (!configs[configValue]?.[desc.bInterfaceNumber]) {
 						configs[configValue]![desc.bInterfaceNumber] = {};

@@ -1,3 +1,6 @@
+import { WebDFUInterfaceSubDescriptor } from "../../core";
+import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
+
 /**
  * USB Interface Descriptor
  * Defined in the USB Specification Revision 2.0, Section 9.6.5 'Interface'
@@ -83,6 +86,7 @@ export type USBInterfaceDescriptor = {
 	 */
 	iInterface: number;
 
-	// descriptors object in existing webDFU code
-	// either DFUFunctionalDescriptor or InterfaceSubDescriptor (to be implemented)
+	// The existing webDFU code has these descriptor objects.
+	// This behaviour may be changed in the future but for now it will be ported across.
+	descriptors: (DFUFunctionalDescriptor | WebDFUInterfaceSubDescriptor)[];
 };

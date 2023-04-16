@@ -1,28 +1,13 @@
-import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 
-import { USBDeviceDescriptor } from "./types/usb/deviceDescriptor";
-
 import parsers from "./parsers";
+import { USBInterfaceDescriptor } from "./types/usb/interfaceDescriptor";
 
 export type WebDFUSettings = {
 	name?: string;
 	configuration: USBConfiguration;
 	interface: USBInterface;
 	alternate: USBAlternateInterface;
-};
-
-export type WebDFUInterfaceDescriptor = {
-	bLength: number;
-	bDescriptorType: number;
-	bInterfaceNumber: number;
-	bAlternateSetting: number;
-	bNumEndpoints: number;
-	bInterfaceClass: number;
-	bInterfaceSubClass: number;
-	bInterfaceProtocol: number;
-	iInterface: number;
-	descriptors: (DFUFunctionalDescriptor | WebDFUInterfaceSubDescriptor)[];
 };
 
 export type WebDFUInterfaceSubDescriptor = {
@@ -114,7 +99,7 @@ export function parseMemoryDescriptor(desc: string): {
 	return { name, segments };
 }
 
-export function parseInterfaceDescriptor(data: DataView): WebDFUInterfaceDescriptor {
+export function parseInterfaceDescriptor(data: DataView): USBInterfaceDescriptor {
 	return {
 		bLength: data.getUint8(0),
 		bDescriptorType: data.getUint8(1),
