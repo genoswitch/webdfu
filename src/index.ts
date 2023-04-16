@@ -175,8 +175,11 @@ export class WebDFU {
 		let funcDesc: WebDFUInterfaceSubDescriptor | null = null;
 		let configValue = this.device.configuration?.configurationValue;
 		if (configDesc.bConfigurationValue == configValue) {
+			// Iterate through an array of USBInterfaceDescriptor | DFUFunctionalDescriptor
 			for (let desc of configDesc.descriptors) {
+				// bDescriptorType is in both types | bcdDFUVersion only in DFUFunctionalDescriptor
 				if (desc.bDescriptorType == 0x21 && desc.hasOwnProperty("bcdDFUVersion")) {
+					// Effectively "if dfu functional descriptor, cast to subdescriptor"
 					funcDesc = desc as WebDFUInterfaceSubDescriptor;
 					break;
 				}

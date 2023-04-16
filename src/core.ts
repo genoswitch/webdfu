@@ -146,10 +146,11 @@ export function parseSubDescriptors(descriptorData: DataView) {
 			descriptors.push(funcDesc);
 			currIntf?.descriptors.push(funcDesc);
 		} else {
+			// Seems to be used as a generic descriptor here
 			let desc = {
-				bLength: bLength,
+				bLength: bLength, // All descriptors have a bLength and bDescriptorType
 				bDescriptorType: bDescriptorType,
-				descData: descData,
+				descData: descData, // Pass the rest of the data intact
 			} as WebDFUInterfaceSubDescriptor;
 			descriptors.push(desc);
 			if (currIntf) {
