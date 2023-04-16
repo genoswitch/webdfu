@@ -3,6 +3,8 @@ import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 
 import { USBDeviceDescriptor } from "./types/usb/deviceDescriptor";
 
+import parsers from "./parsers";
+
 export type WebDFUSettings = {
 	name?: string;
 	configuration: USBConfiguration;
@@ -112,17 +114,6 @@ export function parseMemoryDescriptor(desc: string): {
 	return { name, segments };
 }
 
-export function parseFunctionalDescriptor(data: DataView): DFUFunctionalDescriptor {
-	return {
-		bLength: data.getUint8(0),
-		bDescriptorType: data.getUint8(1),
-		bmAttributes: data.getUint8(2),
-		wDetachTimeOut: data.getUint16(3, true),
-		wTransferSize: data.getUint16(5, true),
-		bcdDFUVersion: data.getUint16(7, true),
-	};
-}
-
 export function parseInterfaceDescriptor(data: DataView): WebDFUInterfaceDescriptor {
 	return {
 		bLength: data.getUint8(0),
@@ -166,7 +157,7 @@ export function parseSubDescriptors(descriptorData: DataView) {
 			}
 			descriptors.push(currIntf);
 		} else if (inDfuIntf && bDescriptorType == DT_DFU_FUNCTIONAL) {
-			let funcDesc = parseFunctionalDescriptor(descData);
+			let funcDesc = parsers.dfu.functionalDescriptor(descData);
 			descriptors.push(funcDesc);
 			currIntf?.descriptors.push(funcDesc);
 		} else {
