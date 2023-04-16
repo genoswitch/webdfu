@@ -112,25 +112,6 @@ export function parseMemoryDescriptor(desc: string): {
 	return { name, segments };
 }
 
-export function parseDeviceDescriptor(data: DataView): USBDeviceDescriptor {
-	return {
-		bLength: data.getUint8(0),
-		bDescriptorType: data.getUint8(1),
-		bcdUSB: data.getUint16(2, true),
-		bDeviceClass: data.getUint8(4),
-		bDeviceSubClass: data.getUint8(5),
-		bDeviceProtocol: data.getUint8(6),
-		bMaxPacketSize0: data.getUint8(7),
-		idVendor: data.getUint16(8, true),
-		idProduct: data.getUint16(10, true),
-		bcdDevice: data.getUint16(12, true),
-		iManufacturer: data.getUint8(14),
-		iProduct: data.getUint8(15),
-		iSerialNumber: data.getUint8(16),
-		bNumConfigurations: data.getUint8(17),
-	};
-}
-
 export function parseFunctionalDescriptor(data: DataView): DFUFunctionalDescriptor {
 	return {
 		bLength: data.getUint8(0),
