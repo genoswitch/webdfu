@@ -2,6 +2,7 @@ import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 
 import parsers from "./parsers";
 import { USBInterfaceDescriptor } from "./types/usb/interfaceDescriptor";
+import { USBDescriptorType } from "./protocol/usb/descriptorTypes";
 
 export type WebDFUSettings = {
 	name?: string;
@@ -115,9 +116,6 @@ export function parseInterfaceDescriptor(data: DataView): USBInterfaceDescriptor
 }
 
 export function parseSubDescriptors(descriptorData: DataView) {
-	const DT_INTERFACE = 4;
-	// const DT_ENDPOINT = 5;
-	const DT_DFU_FUNCTIONAL = 0x21;
 	const USB_CLASS_APP_SPECIFIC = 0xfe;
 	const USB_SUBCLASS_DFU = 0x01;
 
@@ -130,7 +128,7 @@ export function parseSubDescriptors(descriptorData: DataView) {
 		let bLength = remainingData.getUint8(0);
 		let bDescriptorType = remainingData.getUint8(1);
 		let descData = new DataView(remainingData.buffer.slice(0, bLength));
-		if (bDescriptorType == DT_INTERFACE) {
+		if (bDescriptorType == USBDescriptorType.INTERFACE) {
 			currIntf = parseInterfaceDescriptor(descData);
 			if (
 				currIntf.bInterfaceClass == USB_CLASS_APP_SPECIFIC &&
@@ -141,7 +139,7 @@ export function parseSubDescriptors(descriptorData: DataView) {
 				inDfuIntf = false;
 			}
 			descriptors.push(currIntf);
-		} else if (inDfuIntf && bDescriptorType == DT_DFU_FUNCTIONAL) {
+		} else if (inDfuIntf && bDescriptorType == USBDescriptorType.DFU_FUNCTIONAL) {
 			let funcDesc = parsers.dfu.functionalDescriptor(descData);
 			descriptors.push(funcDesc);
 			currIntf?.descriptors.push(funcDesc);
