@@ -7,7 +7,7 @@ import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
  *
  * Properties are annotated based on their respective descriptions from Table 9-12 in the same section.
  */
-export type USBInterfaceDescriptor = {
+export interface USBInterfaceDescriptor {
 	/**
 	 * ** Size of this descriptor in bytes**
 	 */
@@ -89,4 +89,4 @@ export type USBInterfaceDescriptor = {
 	// The existing webDFU code has these descriptor objects.
 	// This behaviour may be changed in the future but for now it will be ported across.
 	descriptors: (DFUFunctionalDescriptor | WebDFUInterfaceSubDescriptor)[];
-};
+}

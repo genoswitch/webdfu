@@ -4,7 +4,7 @@
  *
  * Properties are annotated with their respective descriptions from Table 9-8 in the same section.
  */
-export type USBDeviceDescriptor = {
+export interface USBDeviceDescriptor {
 	/**
 	 * **Size of this descriptor, in bytes.**
 	 */
@@ -114,4 +114,4 @@ export type USBDeviceDescriptor = {
 	 * Note that for a DFU device this value should be set to one.
 	 */
 	bNumConfigurations: number;
-};
+}

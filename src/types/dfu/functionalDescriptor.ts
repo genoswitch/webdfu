@@ -9,7 +9,7 @@
  *
  * Therefore, Section 4.2.4 "DFU Functional Descriptor" simply points to `4.1.3`.
  */
-export type DFUFunctionalDescriptor = {
+export interface DFUFunctionalDescriptor {
 	/**
 	 * **Size of this descriptor, in bytes.**
 	 */
@@ -61,4 +61,4 @@ export type DFUFunctionalDescriptor = {
 	 * Numeric expression identifying the version of the DFU Specification release.
 	 */
 	bcdDFUVersion: number;
-};
+}
