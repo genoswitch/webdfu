@@ -1,3 +1,5 @@
+import { USBDescriptor } from "../usb/descriptor";
+
 /**
  * DFU Functional Descriptor.
  *
@@ -9,17 +11,7 @@
  *
  * Therefore, Section 4.2.4 "DFU Functional Descriptor" simply points to `4.1.3`.
  */
-export interface DFUFunctionalDescriptor {
-	/**
-	 * **Size of this descriptor, in bytes.**
-	 */
-	bLength: number;
-
-	/**
-	 * **DFU Functional descriptor type.**
-	 */
-	bDescriptorType: number;
-
+export interface DFUFunctionalDescriptor extends USBDescriptor {
 	/**
 	 * **A bitmask containing DFU attributes.**
 	 *

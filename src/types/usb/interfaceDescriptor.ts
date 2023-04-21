@@ -1,5 +1,6 @@
 import { WebDFUInterfaceSubDescriptor } from "../../core";
 import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
+import { USBDescriptor } from "./descriptor";
 
 /**
  * USB Interface Descriptor
@@ -7,17 +8,7 @@ import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
  *
  * Properties are annotated based on their respective descriptions from Table 9-12 in the same section.
  */
-export interface USBInterfaceDescriptor {
-	/**
-	 * ** Size of this descriptor in bytes**
-	 */
-	bLength: number;
-
-	/**
-	 *  **Interface Descriptor Type** (const)
-	 */
-	bDescriptorType: number;
-
+export interface USBInterfaceDescriptor extends USBDescriptor {
 	/**
 	 * **Number of this interface.**
 	 *

@@ -1,20 +1,12 @@
+import { USBDescriptor } from "./descriptor";
+
 /**
  * Standard USB Device Descriptor.
  * Defined in the USB Specification Revision 2.0, Section 9.6.1 'Device'.
  *
  * Properties are annotated with their respective descriptions from Table 9-8 in the same section.
  */
-export interface USBDeviceDescriptor {
-	/**
-	 * **Size of this descriptor, in bytes.**
-	 */
-	bLength: number;
-
-	/**
-	 * **DEVICE descriptor type.**
-	 */
-	bDescriptorType: number;
-
+export interface USBDeviceDescriptor extends USBDescriptor {
 	/**
 	 * **USB specification release number in binary coded decimal.**
 	 *
