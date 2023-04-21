@@ -20,7 +20,14 @@
  * [Interface Association Descriptors Engineering Change Notice](https://genoswitch.github.io/usb-spec/usb2.0/docs/InterfaceAssociationDescriptor_ecn.pdf), Specification Changes,
  * Amendments to Table 9-6.
  *
- * #### Descriptors 15-49 (`BOS`-`SUPERSPEEDPLUS_ISOCHRONOUS_ENDPOINT_COMPANION`)
+ * #### Descriptors 15-16 (`BOS`-`DEVICE_CAPABILITY`)
+ * [USB 3.2 Revision 1.1 Specification](https://genoswitch.github.io/usb-spec/usb3.2/docs/USB%203.2%20Revision%201.1.pdf), Table 9-6.
+ *
+ * #### Descriptor 21 (`DFU_FUNCTIONAL`)
+ * [DFU Specification, Revision 1.0](https://genoswitch.github.io/usb-spec/dfu/Device%20Firmware%20Upgrade%20Specification%20v1.0.pdf),
+ * Section 4.1.3 "Run-Time DFU Functional Descriptor", Table 4-2 "DFU Functional Descriptor", bDescriptorType literal.
+ *
+ * #### Descriptors 48-49 (`SUPERSPEED_USB_ENDPOINT_COMPANION`-`SUPERSPEEDPLUS_ISOCHRONOUS_ENDPOINT_COMPANION`)
  * [USB 3.2 Revision 1.1 Specification](https://genoswitch.github.io/usb-spec/usb3.2/docs/USB%203.2%20Revision%201.1.pdf), Table 9-6.
  *
  */
@@ -54,12 +61,24 @@ export enum USBDescriptorType {
 	// https://genoswitch.github.io/usb-spec/usb2.0/docs/InterfaceAssociationDescriptor_ecn.pdf
 	INTERFACE_ASSOCIATION = 11,
 
-	// **Descriptors 15-49**
+	// **Descriptors 15-16**
 	// USB 3.2 Revision 1.1 Specification, Table 9-6.
 	// (USB 3.0 specification not found at this time)
 	// https://genoswitch.github.io/usb-spec/usb3.2/docs/USB%203.2%20Revision%201.1.pdf
 	BOS = 15,
 	DEVICE_CAPABILITY = 16,
+
+	// **Descriptor 21**
+	// DFU Specification, Revision 1.0.
+	// Section 4.1.3 "Run-Time DFU Functional Descriptor",
+	// Table 4-2 "DFU Functional Descriptor", bDescriptorType literal.
+	// https://genoswitch.github.io/usb-spec/dfu/Device%20Firmware%20Upgrade%20Specification%20v1.0.pdf
+	DFU_FUNCTIONAL = 21,
+
+	// **Descriptors 48-49**
+	// USB 3.2 Revision 1.1 Specification, Table 9-6.
+	// (USB 3.0 specification not found at this time)
+	// https://genoswitch.github.io/usb-spec/usb3.2/docs/USB%203.2%20Revision%201.1.pdf
 	SUPERSPEED_USB_ENDPOINT_COMPANION = 48,
 	SUPERSPEEDPLUS_ISOCHRONOUS_ENDPOINT_COMPANION = 49,
 }
