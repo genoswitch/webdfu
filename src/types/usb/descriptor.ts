@@ -1,3 +1,5 @@
+import { USBDescriptorType } from "../../protocol/usb/descriptorTypes";
+
 /**
  * USB Descriptor Base interface.
  *
@@ -14,7 +16,7 @@ export interface USBDescriptor {
 	/**
 	 *  **Interface Descriptor Type** (const)
 	 */
-	bDescriptorType: number;
+	bDescriptorType: USBDescriptorType;
 
 	// Raw data
 	data?: DataView;
