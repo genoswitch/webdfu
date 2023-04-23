@@ -1,5 +1,4 @@
 import { WebDFUInterfaceSubDescriptor } from "../../core";
-import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
 import { USBDescriptor } from "./descriptor";
 
 /**

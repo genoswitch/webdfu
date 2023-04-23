@@ -1,9 +1,5 @@
 import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 
-import parsers from "./parsers";
-import { USBInterfaceDescriptor } from "./types/usb/interfaceDescriptor";
-import { USBDescriptorType } from "./protocol/usb/descriptorTypes";
-
 export type WebDFUSettings = {
 	name?: string;
 	configuration: USBConfiguration;
