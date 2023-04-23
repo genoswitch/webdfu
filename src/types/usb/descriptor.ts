@@ -18,6 +18,8 @@ export interface USBDescriptor {
 	 */
 	bDescriptorType: USBDescriptorType;
 
-	// Raw data
+	/**
+	 * Raw data.
+	 */
 	data?: DataView;
 }
