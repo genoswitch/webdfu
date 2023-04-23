@@ -10,7 +10,7 @@ import {
 	parseMemoryDescriptor,
 } from "./core";
 import { WebDFUProcessErase, WebDFUProcessRead, WebDFUProcessWrite } from "./process";
-import { parseConfigurationDescriptor, WebDFUError } from "./core";
+import { WebDFUError } from "./core";
 
 import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
@@ -18,6 +18,7 @@ import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
 import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 import { DFUVersion } from "./protocol/version";
 import { USBInterfaceDescriptor } from "./types/usb/interfaceDescriptor";
+import parsers from "./parsers";
 
 export * from "./core";
 
@@ -171,7 +172,7 @@ export class WebDFU {
 	private async getDFUDescriptorProperties(): Promise<WebDFUProperties | null> {
 		const data = await this.readConfigurationDescriptor(0);
 
-		let configDesc = parseConfigurationDescriptor(data);
+		let configDesc = parsers.usb.configurationDescriptor(data);
 		let funcDesc: WebDFUInterfaceSubDescriptor | null = null;
 		let configValue = this.device.configuration?.configurationValue;
 		if (configDesc.bConfigurationValue == configValue) {
@@ -320,7 +321,7 @@ export class WebDFU {
 		let allStringIndices = new Set<any>();
 		for (let configIndex = 0; configIndex < this.device.configurations.length; configIndex++) {
 			const rawConfig = await this.readConfigurationDescriptor(configIndex);
-			let configDesc = parseConfigurationDescriptor(rawConfig);
+			let configDesc = parsers.usb.configurationDescriptor(rawConfig);
 			let configValue = configDesc.bConfigurationValue;
 			configs[configValue] = {};
 

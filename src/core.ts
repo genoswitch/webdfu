@@ -99,20 +99,3 @@ export function parseMemoryDescriptor(desc: string): {
 
 	return { name, segments };
 }
-
-export function parseConfigurationDescriptor(data: DataView) {
-	let descriptorData = new DataView(data.buffer.slice(9));
-	let descriptors = parsers.usb.subDescriptor(descriptorData);
-
-	return {
-		bLength: data.getUint8(0),
-		bDescriptorType: data.getUint8(1),
-		wTotalLength: data.getUint16(2, true),
-		bNumInterfaces: data.getUint8(4),
-		bConfigurationValue: data.getUint8(5),
-		iConfiguration: data.getUint8(6),
-		bmAttributes: data.getUint8(7),
-		bMaxPower: data.getUint8(8),
-		descriptors: descriptors,
-	};
-}
