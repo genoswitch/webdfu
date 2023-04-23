@@ -326,18 +326,24 @@ export class WebDFU {
 			configs[configValue] = {};
 
 			// Retrieve string indices for interface names
-			for (let desc of configDesc.descriptors) {
+			for (const desc of configDesc.descriptors) {
 				if (desc.bDescriptorType === DT_INTERFACE) {
-					desc = desc as USBInterfaceDescriptor;
+					// Descriptor is of type interface,
+					// cast to the appropiate type (instead of leaving as a generic type)
+					// In TS we cannot change the type of an existing object, so if we cast it,
+					// it becomes the type "USBInterface | USBInterfaceDescriptor"
+					// Instead we must cast it to a new object.
+					const ifaceDesc = desc as USBInterfaceDescriptor;
 
-					if (!configs[configValue]?.[desc.bInterfaceNumber]) {
-						configs[configValue]![desc.bInterfaceNumber] = {};
+					if (!configs[configValue]?.[ifaceDesc.bInterfaceNumber]) {
+						configs[configValue]![ifaceDesc.bInterfaceNumber] = {};
 					}
 
-					configs[configValue]![desc.bInterfaceNumber]![desc.bAlternateSetting] = desc.iInterface;
+					configs[configValue]![ifaceDesc.bInterfaceNumber]![ifaceDesc.bAlternateSetting] =
+						ifaceDesc.iInterface;
 
-					if (desc.iInterface > 0) {
-						allStringIndices.add(desc.iInterface);
+					if (ifaceDesc.iInterface > 0) {
+						allStringIndices.add(ifaceDesc.iInterface);
 					}
 				}
 			}
