@@ -100,55 +100,9 @@ export function parseMemoryDescriptor(desc: string): {
 	return { name, segments };
 }
 
-export function parseSubDescriptors(descriptorData: DataView) {
-	const USB_CLASS_APP_SPECIFIC = 0xfe;
-	const USB_SUBCLASS_DFU = 0x01;
-
-	let remainingData: DataView = descriptorData;
-	let descriptors = [];
-	let currIntf;
-	let inDfuIntf = false;
-
-	while (remainingData.byteLength > 2) {
-		let bLength = remainingData.getUint8(0);
-		let bDescriptorType = remainingData.getUint8(1);
-		let descData = new DataView(remainingData.buffer.slice(0, bLength));
-		if (bDescriptorType == USBDescriptorType.INTERFACE) {
-			currIntf = parsers.usb.interfaceDescriptor(descData);
-			if (
-				currIntf.bInterfaceClass == USB_CLASS_APP_SPECIFIC &&
-				currIntf.bInterfaceSubClass == USB_SUBCLASS_DFU
-			) {
-				inDfuIntf = true;
-			} else {
-				inDfuIntf = false;
-			}
-			descriptors.push(currIntf);
-		} else if (inDfuIntf && bDescriptorType == USBDescriptorType.DFU_FUNCTIONAL) {
-			let funcDesc = parsers.dfu.functionalDescriptor(descData);
-			descriptors.push(funcDesc);
-			currIntf?.descriptors.push(funcDesc);
-		} else {
-			// Seems to be used as a generic descriptor here
-			let desc = {
-				bLength: bLength, // All descriptors have a bLength and bDescriptorType
-				bDescriptorType: bDescriptorType,
-				descData: descData, // Pass the rest of the data intact
-			} as WebDFUInterfaceSubDescriptor;
-			descriptors.push(desc);
-			if (currIntf) {
-				currIntf.descriptors.push(desc);
-			}
-		}
-		remainingData = new DataView(remainingData.buffer.slice(bLength));
-	}
-
-	return descriptors;
-}
-
 export function parseConfigurationDescriptor(data: DataView) {
 	let descriptorData = new DataView(data.buffer.slice(9));
-	let descriptors = parseSubDescriptors(descriptorData);
+	let descriptors = parsers.usb.subDescriptor(descriptorData);
 
 	return {
 		bLength: data.getUint8(0),
