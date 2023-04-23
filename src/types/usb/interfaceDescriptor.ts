@@ -79,5 +79,5 @@ export interface USBInterfaceDescriptor extends USBDescriptor {
 
 	// The existing webDFU code has these descriptor objects.
 	// This behaviour may be changed in the future but for now it will be ported across.
-	descriptors: (DFUFunctionalDescriptor | WebDFUInterfaceSubDescriptor)[];
+	descriptors: (USBDescriptor | WebDFUInterfaceSubDescriptor)[];
 }
