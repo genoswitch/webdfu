@@ -7,6 +7,17 @@ import { interfaceDescriptor } from "./interfaceDescriptor";
 const USB_CLASS_APP_SPECIFIC = 0xfe;
 const USB_SUBCLASS_DFU = 0x01;
 
+/**
+ * Parse "sub"-descriptors from a given DataView object.
+ *
+ * Some descriptors contain "sub-descriptors", that it to say,
+ * return multiple descriptors in one request.
+ *
+ * An example of a descriptor that does this would be a configuration descriptor.
+ *
+ * @param data The `DataView` object containing data for multiple descriptors
+ * @returns an array of objects with a parent of `USBDescriptor` corresponding to the parsed descriptors.
+ */
 export const subDescriptor = (data: DataView): USBDescriptor[] => {
 	// Some descriptors contain "sub-descriptors", that it to say,
 	// return multiple descriptors in one request.
