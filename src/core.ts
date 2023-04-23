@@ -100,21 +100,6 @@ export function parseMemoryDescriptor(desc: string): {
 	return { name, segments };
 }
 
-export function parseInterfaceDescriptor(data: DataView): USBInterfaceDescriptor {
-	return {
-		bLength: data.getUint8(0),
-		bDescriptorType: data.getUint8(1),
-		bInterfaceNumber: data.getUint8(2),
-		bAlternateSetting: data.getUint8(3),
-		bNumEndpoints: data.getUint8(4),
-		bInterfaceClass: data.getUint8(5),
-		bInterfaceSubClass: data.getUint8(6),
-		bInterfaceProtocol: data.getUint8(7),
-		iInterface: data.getUint8(8),
-		descriptors: [],
-	};
-}
-
 export function parseSubDescriptors(descriptorData: DataView) {
 	const USB_CLASS_APP_SPECIFIC = 0xfe;
 	const USB_SUBCLASS_DFU = 0x01;
@@ -129,7 +114,7 @@ export function parseSubDescriptors(descriptorData: DataView) {
 		let bDescriptorType = remainingData.getUint8(1);
 		let descData = new DataView(remainingData.buffer.slice(0, bLength));
 		if (bDescriptorType == USBDescriptorType.INTERFACE) {
-			currIntf = parseInterfaceDescriptor(descData);
+			currIntf = parsers.usb.interfaceDescriptor(descData);
 			if (
 				currIntf.bInterfaceClass == USB_CLASS_APP_SPECIFIC &&
 				currIntf.bInterfaceSubClass == USB_SUBCLASS_DFU
