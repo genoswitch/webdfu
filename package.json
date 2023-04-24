@@ -27,7 +27,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Flipper-Zero/webdfu.git"
+		"url": "git+https://github.com/genoswitch/webdfu.git"
 	},
 	"keywords": [
 		"dfu",
@@ -37,9 +37,9 @@
 	"author": "Nikolay Govorov <me@govorov.online> (https://govorov.online)",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Flipper-Zero/webdfu/issues"
+		"url": "https://github.com/genoswitch/webdfu/issues"
 	},
-	"homepage": "https://github.com/Flipper-Zero/webdfu#readme",
+	"homepage": "https://github.com/genoswitch/webdfu#readme",
 	"devDependencies": {
 		"@types/w3c-web-serial": "^1.0.1",
 		"@types/w3c-web-usb": "^1.0.4",
