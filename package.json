@@ -34,7 +34,10 @@
 		"web",
 		"flipper"
 	],
-	"author": "Nikolay Govorov <me@govorov.online> (https://govorov.online)",
+	"contributors": [
+		"Nikolay Govorov <me@govorov.online> (https://govorov.online)",
+		"James Cahill"
+	],
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/genoswitch/webdfu/issues"
