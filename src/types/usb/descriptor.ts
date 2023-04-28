@@ -1,7 +1,7 @@
 import { USBDescriptorType } from "../../protocol/usb/descriptorTypes";
 
 /**
- * USB Descriptor Base interface.
+ * USB Descriptor (base class).
  *
  * This interface contains common properties used in all descriptors. The base interface, if you will.
  *
@@ -22,7 +22,7 @@ export class USBDescriptor {
 	readonly bLength: number;
 
 	/**
-	 *  The Interface Descriptor Type of this descriptor.
+	 * The Interface Descriptor Type of this descriptor.
 	 *
 	 * @fieldByteSize 1
 	 * @fieldByteIndex 1
