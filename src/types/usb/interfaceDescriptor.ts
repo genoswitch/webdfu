@@ -8,9 +8,7 @@ import { USBDescriptor } from "./descriptor";
  *
  * The USB Interface Descriptor is defined in the USB Specification Revision 2.0, Section 9.6.5 'Interface'.
  *
- * Property sizes are taken from the USB Specification Revision 2, Section 9.6.5, Table 9-12. "Standard Interface Descriptor".
- *
- * Properties are annotated based on their respective descriptions from Table 9-12 in the same section.
+ * Property sizes and annotations are taken from the USB Specification Revision 2, Section 9.6.5, Table 9-12. "Standard Interface Descriptor".
  */
 export class USBInterfaceDescriptor extends USBDescriptor {
 	/**
