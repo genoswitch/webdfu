@@ -17,8 +17,7 @@ import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRe
 import { DfuSeRequestCommand } from "./protocol/dfuse/requests/command";
 import { DfuSeMemorySegment } from "./types/dfuse/memorySegment";
 import { DFUVersion } from "./protocol/version";
-import { USBInterfaceDescriptor } from "./types/usb/interfaceDescriptor";
-import parsers from "./parsers";
+import { USBConfigurationDescriptor, USBInterfaceDescriptor } from "./types/usb";
 
 export * from "./core";
 
@@ -172,7 +171,7 @@ export class WebDFU {
 	private async getDFUDescriptorProperties(): Promise<WebDFUProperties | null> {
 		const data = await this.readConfigurationDescriptor(0);
 
-		let configDesc = parsers.usb.configurationDescriptor(data);
+		let configDesc = new USBConfigurationDescriptor(data);
 		let funcDesc: WebDFUInterfaceSubDescriptor | null = null;
 		let configValue = this.device.configuration?.configurationValue;
 		if (configDesc.bConfigurationValue == configValue) {
@@ -321,7 +320,7 @@ export class WebDFU {
 		let allStringIndices = new Set<any>();
 		for (let configIndex = 0; configIndex < this.device.configurations.length; configIndex++) {
 			const rawConfig = await this.readConfigurationDescriptor(configIndex);
-			let configDesc = parsers.usb.configurationDescriptor(rawConfig);
+			let configDesc = new USBConfigurationDescriptor(rawConfig);
 			let configValue = configDesc.bConfigurationValue;
 			configs[configValue] = {};
 
