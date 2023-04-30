@@ -6,8 +6,9 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleResolution": "node",
+
 		// Inherited from old tsconfig.json
-		// "esModuleInterop": true,
+
 		// "lib": ["ES5", "ES6", "dom"],
 		"incremental": true,
 		"strict": true,
