@@ -18,7 +18,7 @@
 		"package-lock.json"
 	],
 	"scripts": {
-		"build": "rollup -c rollup.config.js",
+		"build": "webpack --mode production",
 		"format": "prettier --check .",
 		"lint": "eslint **/*.ts",
 		"types": "tsc --build tsconfig.json",
