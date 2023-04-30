@@ -18,7 +18,7 @@
 		"package-lock.json"
 	],
 	"scripts": {
-		"build": "rollup -c rollup.config.js",
+		"build": "webpack --mode production",
 		"format": "prettier --check .",
 		"lint": "eslint **/*.ts",
 		"types": "tsc --build tsconfig.json",
@@ -53,10 +53,10 @@
 		"npm-run-all": "^4.1.5",
 		"prettier": "^2.3.0",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.52.0",
-		"rollup-plugin-terser": "^7.0.2",
-		"rollup-plugin-ts": "^1.4.0",
-		"typescript": "^4.3.2"
+		"ts-loader": "^9.4.2",
+		"typescript": "^4.3.2",
+		"webpack": "^5.81.0",
+		"webpack-cli": "^5.0.2"
 	},
 	"dependencies": {
 		"nanoevents": "^6.0.0"
