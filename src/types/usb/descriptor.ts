@@ -36,6 +36,16 @@ export class USBDescriptor {
 	readonly data: DataView;
 
 	/**
+	 * A `DataView` object containing any bytes passed to the constructor that were
+	 * not part of the first or 'parent' descriptor.
+	 *
+	 * @remarks
+	 * For example, a configuration descriptor constructor may be passed "sub-descriptors" which are then passed.
+	 * When the descriptor is split in the parent class (USBDescriptor), any extra bytes are stored here.
+	 */
+	readonly overflowData: DataView;
+
+	/**
 	 * Parse a USB (Base) Descriptor from the given `DataView`.
 	 *
 	 * This constructor will slice the DataView to only contain data from the same descriptor,
@@ -50,5 +60,6 @@ export class USBDescriptor {
 		// Construct a DataView object with a subset of the data property corresponding to the descriptor size.
 		// This means that when this function is called with multiple descriptors, only the 'current' descriptor data is returned.
 		this.data = new DataView(data.buffer.slice(0, this.bLength));
+		this.overflowData = new DataView(data.buffer.slice(this.bLength));
 	}
 }
