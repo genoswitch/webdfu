@@ -1,3 +1,4 @@
+import { DFUFunctionalDescriptorAttribute } from "../../protocol/dfu/functionalDescriptorAttribute";
 import { USBDescriptor } from "../usb/descriptor";
 
 /**
@@ -74,6 +75,13 @@ export class DFUFunctionalDescriptor extends USBDescriptor {
 	readonly bcdDFUVersion: number;
 
 	/**
+	 * (alias) Enum of available attributes for this descriptor.
+	 *
+	 * @see isSupported
+	 */
+	readonly attributes = DFUFunctionalDescriptorAttribute;
+
+	/**
 	 * Parse a DFU Functional Descriptor from the given `DataView`
 	 *
 	 *
@@ -88,5 +96,15 @@ export class DFUFunctionalDescriptor extends USBDescriptor {
 		this.wDetachTimeOut = this.data.getUint16(3, true);
 		this.wTransferSize = this.data.getUint16(5, true);
 		this.bcdDFUVersion = this.data.getUint16(7, true);
+	}
+
+	/**
+	 * Query if an attribute is supported or set.
+	 *
+	 * @param attr The attribute to query against
+	 * @returns A boolean representing if the attribute is supported/set or not.
+	 */
+	isSupported(attr: DFUFunctionalDescriptorAttribute): boolean {
+		return (this.bmAttributes & attr) != 0;
 	}
 }
