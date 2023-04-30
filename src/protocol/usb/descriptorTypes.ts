@@ -23,9 +23,11 @@
  * #### Descriptors 15-16 (`BOS`-`DEVICE_CAPABILITY`)
  * [USB 3.2 Revision 1.1 Specification](https://genoswitch.github.io/usb-spec/usb3.2/docs/USB%203.2%20Revision%201.1.pdf), Table 9-6.
  *
- * #### Descriptor 21 (`DFU_FUNCTIONAL`)
+ * #### Descriptor 33 (`DFU_FUNCTIONAL`)
  * [DFU Specification, Revision 1.0](https://genoswitch.github.io/usb-spec/dfu/Device%20Firmware%20Upgrade%20Specification%20v1.0.pdf),
  * Section 4.1.3 "Run-Time DFU Functional Descriptor", Table 4-2 "DFU Functional Descriptor", bDescriptorType literal.
+ *
+ * The value is not noted in the specification, so the value was instead sourced from the [upstream (flipperdevices) codebase](https://github.com/genoswitch/webdfu/blob/archive/upstream-flipperdevices/index.ts#L180) as well as in [TinyUSB (`src/class/dfu/dfu.h`)](https://github.com/hathach/tinyusb/blob/5e023fa2ca4c20f06b6e0dc12f6f044a7d4e14bd/src/class/dfu/dfu.h#L50)
  *
  * #### Descriptors 48-49 (`SUPERSPEED_USB_ENDPOINT_COMPANION`-`SUPERSPEEDPLUS_ISOCHRONOUS_ENDPOINT_COMPANION`)
  * [USB 3.2 Revision 1.1 Specification](https://genoswitch.github.io/usb-spec/usb3.2/docs/USB%203.2%20Revision%201.1.pdf), Table 9-6.
@@ -68,12 +70,14 @@ export enum USBDescriptorType {
 	BOS = 15,
 	DEVICE_CAPABILITY = 16,
 
-	// **Descriptor 21**
+	// **Descriptor 33**
 	// DFU Specification, Revision 1.0.
 	// Section 4.1.3 "Run-Time DFU Functional Descriptor",
 	// Table 4-2 "DFU Functional Descriptor", bDescriptorType literal.
 	// https://genoswitch.github.io/usb-spec/dfu/Device%20Firmware%20Upgrade%20Specification%20v1.0.pdf
-	DFU_FUNCTIONAL = 21,
+	// Value inherited from upstream (flipperdevices) codebase, as well as tinyUSB.
+	// The value is not noted in the specification.
+	DFU_FUNCTIONAL = 33, // 0x21
 
 	// **Descriptors 48-49**
 	// USB 3.2 Revision 1.1 Specification, Table 9-6.
