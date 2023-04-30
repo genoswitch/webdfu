@@ -1,15 +1,15 @@
 {
+	"include": ["src/**/*.ts"],
 	"compilerOptions": {
-		"rootDir": "./",
-		"incremental": true,
-		"target": "es6",
+		"rootDir": "src",
+		"outDir": "dist",
+		"target": "ESNext",
 		"module": "ESNext",
-		"noEmit": true,
-		"esModuleInterop": true,
 		"moduleResolution": "node",
-		"lib": ["ES5", "ES6", "dom"],
-		"declaration": true,
-
+		// Inherited from old tsconfig.json
+		// "esModuleInterop": true,
+		// "lib": ["ES5", "ES6", "dom"],
+		"incremental": true,
 		"strict": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,
@@ -27,6 +27,5 @@
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"forceConsistentCasingInFileNames": true
-	},
-	"include": ["."]
+	}
 }
