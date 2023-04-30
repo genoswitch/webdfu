@@ -1,4 +1,5 @@
 import { WebDFUInterfaceSubDescriptor } from "../../core";
+import { USBConfigurationDescriptorAttribute } from "../../protocol/usb/configurationDescriptorAttribute";
 import { USBDescriptorType } from "../../protocol/usb/descriptorTypes";
 import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
 import { USBDescriptor } from "./descriptor";
@@ -108,6 +109,13 @@ export class USBConfigurationDescriptor extends USBDescriptor {
 	 */
 	readonly bMaxPower: number;
 
+	/**
+	 * (alias) Enum of available attributes for this descriptor.
+	 *
+	 * @see isSupported
+	 */
+	readonly attributes = USBConfigurationDescriptorAttribute;
+
 	// The existing webDFU code has these descriptor objects.
 	// This behaviour may be changed in the future but for now it will be ported across.
 	descriptors: (USBDescriptor | WebDFUInterfaceSubDescriptor)[];
@@ -130,6 +138,16 @@ export class USBConfigurationDescriptor extends USBDescriptor {
 
 		// Parse all descriptors ('sub-descriptors') located after this configuration descriptor
 		this.descriptors = USBConfigurationDescriptor.parseSubDescriptors(this.overflowData);
+	}
+
+	/**
+	 * Query if an attribute is supported or set.
+	 *
+	 * @param attr The attribute to query against
+	 * @returns A boolean representing if the attribute is supported/set or not.
+	 */
+	isSupported(attr: USBConfigurationDescriptorAttribute): boolean {
+		return (this.bmAttributes & attr) != 0;
 	}
 
 	/**
