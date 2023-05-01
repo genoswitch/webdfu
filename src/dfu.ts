@@ -1,8 +1,10 @@
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { BlockNumber } from "./protocol/dfu/transfer/block";
+import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
 import { DFUVersion } from "./protocol/version";
 import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 import { DFUStatusResponse } from "./types/dfu/statusResponse";
+import { delay } from "./util/delay";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -156,5 +158,24 @@ export class DFUDevice {
 
 		// We have checked for result.data so TS no longer views it as optional.
 		return new DFUStatusResponse(result.data);
+	}
+
+	/**
+	 * Continuously poll the USB device until the device state matches that of the predicate.
+	 *
+	 * Eg. After a download request, poll until device is IDLE (finished processing)
+	 *
+	 * @param statePredicate A predicate that returns true when the state is what is required
+	 * @returns A {@link Promise} that resolves to a {@link DFUStatusResponse} when the predicate is true.
+	 */
+	private async pollUntil(statePredicate: (state: DFUDeviceState) => boolean) {
+		let dfuStatus = await this.getStatus();
+
+		while (!statePredicate(dfuStatus.bState) && dfuStatus.bState != DFUDeviceState.dfuERROR) {
+			await delay(dfuStatus.bwPollTimeout);
+			dfuStatus = await this.getStatus();
+		}
+
+		return dfuStatus;
 	}
 }
