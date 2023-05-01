@@ -1,3 +1,4 @@
+import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { DFUVersion } from "./protocol/version";
 import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 
@@ -35,4 +36,82 @@ export class DFUDevice {
 		// Fallback to DFU 1.0
 		return DFUVersion.DFU_1_0;
 	}
+
+	//#region USB Transfer helper functions.
+
+	/**
+	 * Transmit specified data to the specified **interface** of the connected USB device..
+	 *
+	 * @param bRequest A vendor-specific command
+	 * @param data A {@link BufferSource} conntaining the data to send to the device
+	 * @param wValue Venddor-specific request paramaters
+	 * @returns A {@link Promise} that resolves to a {@link USBOutTransferResult}
+	 */
+	private async requestOut(
+		bRequest: number | DFUClassSpecificRequest,
+		data?: BufferSource,
+		wValue = 0
+	): Promise<USBOutTransferResult> {
+		const result = await this.device
+			.controlTransferOut(
+				{
+					requestType: "class",
+					recipient: "interface",
+					request: bRequest,
+					value: wValue,
+					index: this.interface.interfaceNumber,
+				},
+				data
+			)
+			.catch(err => {
+				return Promise.reject(`ControlTransferOut failed: ${err}`);
+			});
+
+		if (result.status !== "ok") {
+			return Promise.reject(`Unexpected ControlTransferOut status ${result.status}`);
+		}
+
+		// Request completed successfully
+		return result;
+	}
+
+	/**
+	 * Request a transfer from the USB device to the USB host.
+	 *
+	 * (aka. Recieve a buffer of a provided length from the USB device)
+	 *
+	 * @param bRequest A vendor-specific command
+	 * @param wLength The maximum number of bytes to read from the device
+	 * @param wValue Vendor-specific request paramaters
+	 * @returns A {@link Promise} that resolves to a {@link USBInTransferResult}
+	 */
+	private async requestIn(
+		bRequest: number | DFUClassSpecificRequest,
+		wLength: number,
+		wValue = 0
+	): Promise<USBInTransferResult> {
+		const result = await this.device
+			.controlTransferIn(
+				{
+					requestType: "class",
+					recipient: "interface",
+					request: bRequest,
+					value: wValue,
+					index: this.interface.interfaceNumber,
+				},
+				wLength
+			)
+			.catch(err => {
+				return Promise.reject(`ControlTransferIn failed: ${err}`);
+			});
+
+		if (result.status !== "ok") {
+			return Promise.reject(`Unexpected ControlTransferIn status ${result.status}`);
+		}
+
+		// Request completed successfully
+		return result;
+	}
+
+	//#endregion
 }
