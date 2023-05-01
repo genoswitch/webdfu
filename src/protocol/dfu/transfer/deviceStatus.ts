@@ -57,7 +57,7 @@ export enum DFUDeviceStatus {
 	errADDRESS = 8,
 
 	/**
-	 * Received DFU_DNLOAD (see {@link DFUClassSpecificRequest.DFU_DNLOAD}) with wLength = 0, but device does not think it has all of the data yet.
+	 * Received {@link DFUClassSpecificRequest.DFU_DNLOAD | DFU_DNLOAD} with wLength = 0, but device does not think it has all of the data yet.
 	 */
 	errNOTDONE = 9,
 
