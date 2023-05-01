@@ -2,6 +2,7 @@ import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRe
 import { BlockNumber } from "./protocol/dfu/transfer/block";
 import { DFUVersion } from "./protocol/version";
 import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
+import { DFUStatusResponse } from "./types/dfu/statusResponse";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -136,5 +137,24 @@ export class DFUDevice {
 	 */
 	private upload(length: number, blockNum: BlockNumber) {
 		return this.requestIn(DFUClassSpecificRequest.DFU_UPLOAD, length, blockNum);
+	}
+
+	/**
+	 * Send a {@link DFUClassSpecificRequest.DFU_GETSTATUS | DFU_GETSTATUS} request to the device.
+	 *
+	 * @returns A {@link Promise} that resolves to a {@link DFUStatusResponse} containing the response payload
+	 */
+	async getStatus(): Promise<DFUStatusResponse> {
+		// wLength: 6
+		const result = await this.requestIn(DFUClassSpecificRequest.DFU_GETSTATUS, 6).catch(err => {
+			return Promise.reject(`DFU_GETSTATUS failed: ${err}`);
+		});
+
+		if (!result.data) {
+			return Promise.reject("DFU_GETSTATUS returned a USBTransferInResult with no data.");
+		}
+
+		// We have checked for result.data so TS no longer views it as optional.
+		return new DFUStatusResponse(result.data);
 	}
 }
