@@ -1,4 +1,5 @@
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
+import { BlockNumber } from "./protocol/dfu/transfer/block";
 import { DFUVersion } from "./protocol/version";
 import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 
@@ -114,4 +115,26 @@ export class DFUDevice {
 	}
 
 	//#endregion
+
+	/**
+	 * Download a {@link ArrayBuffer} to the USB device.
+	 *
+	 * @param data An {@link ArrayBuffer} containing the data to be transmitted
+	 * @param blockNum The block number.
+	 * @returns A {@link Promise} that resolves to a {@link USBOutTransferResult}
+	 */
+	private download(data: ArrayBuffer, blockNum: BlockNumber) {
+		return this.requestOut(DFUClassSpecificRequest.DFU_DNLOAD, data, blockNum);
+	}
+
+	/**
+	 * Upload a specified block from the USB device to the USB host (us).
+	 *
+	 * @param length The maximum number of bytes to read from the USB device
+	 * @param blockNum The block number to request
+	 * @returns A {@link Promise} that resolves to {@link USBInTransferResult} which contains the data.
+	 */
+	private upload(length: number, blockNum: BlockNumber) {
+		return this.requestIn(DFUClassSpecificRequest.DFU_UPLOAD, length, blockNum);
+	}
 }
