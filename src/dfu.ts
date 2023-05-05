@@ -1,3 +1,7 @@
+import TypedEmitter from "typed-emitter";
+import { EventEmitter } from "events";
+
+import { WriteEvents } from "./events";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { BlockNumber } from "./protocol/dfu/transfer/block";
 import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
@@ -5,6 +9,7 @@ import { DFUVersion } from "./protocol/version";
 import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 import { DFUStatusResponse } from "./types/dfu/statusResponse";
 import { delay } from "./util/delay";
+import { DFUDeviceStatus } from "./protocol/dfu/transfer/deviceStatus";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -181,5 +186,78 @@ export class DFUDevice {
 		}
 
 		return dfuStatus;
+	}
+
+	beginWrite(data: ArrayBuffer): TypedEmitter<WriteEvents> {
+		const emitter = new EventEmitter() as TypedEmitter<WriteEvents>;
+
+		// do_read
+
+		return emitter;
+	}
+
+	private async doWrite(process: TypedEmitter<WriteEvents>, data: ArrayBuffer): Promise<void> {
+		let bytesSent = 0;
+		const expectedSize = data.byteLength;
+		let transactionNumber = 0;
+
+		// Alias function to emit a progress event
+		const sendProgress = () => process.emit("progress", bytesSent, expectedSize);
+
+		// Emit the start event
+		process.emit("start");
+
+		while (bytesSent < expectedSize) {
+			// Determine how many bytes still need to be sent.
+			const bytesLeft = expectedSize - bytesSent;
+
+			// Set the chunk size to `bytesLeft` or the device transfer size,
+			// whatever is smaller (Math.min)
+			const chunkSize = Math.min(bytesLeft, this.transferSize);
+
+			// Slice the (complete) data ArrayBuffer to a smaller buffer
+			// containing the data to be sent this chunk.
+			const chunkData = data.slice(bytesSent, bytesSent + chunkSize);
+
+			// Attempt to write.
+
+			// transferResult.status is checked by this.download -> this.requestOut
+			// The amount of bytes written is at transferResult.bytesWritten
+
+			// We increment transactionNumber in the download call.
+			// This will increment after use, so there will still be a transaction 0.
+			const transferResult = await this.download(chunkData, transactionNumber++).catch(err => {
+				return Promise.reject(`Error during DFU download operation: ${err}`);
+			});
+
+			// Wait until the device re-enters the download idle state
+			// (Meaning it has finished processing this transaction/block)
+			const dfuStatus = await this.pollUntil(state => state == DFUDeviceState.dfuDNLOAD_IDLE);
+
+			// Check that the DFU status is okay.
+			if (dfuStatus?.bStatus != DFUDeviceStatus.OK) {
+				return Promise.reject(
+					`DFU Download failed with state=${dfuStatus?.bState}, status=${dfuStatus?.bStatus}`
+				);
+			}
+
+			// Increment bytesSent (function defined) by
+			// transferResult.bytesWritten(while loop iteration defined)
+			bytesSent += transferResult.bytesWritten;
+
+			// Transaction sent! Send a progress event
+			sendProgress();
+		}
+
+		// All chunks sent!
+
+		// (Inherited from old code)
+		// Send a download request with a buffer of length 0
+		await this.download(new ArrayBuffer(0), transactionNumber++).catch(err => {
+			return Promise.reject(`Error during final (zero-byte) DFU download: ${err}`);
+		});
+
+		// Finished writing!
+		// NEXT: Send end event, handle reset/manifestationTolerance.
 	}
 }
