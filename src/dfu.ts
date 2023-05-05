@@ -41,6 +41,10 @@ export class DFUDevice {
 		return DFUVersion.DFU_1_0;
 	}
 
+	get transferSize(): number {
+		return this.functionalDescriptor.wTransferSize;
+	}
+
 	//#region USB Transfer helper functions.
 
 	/**
