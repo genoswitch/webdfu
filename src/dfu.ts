@@ -11,6 +11,7 @@ import { DFUStatusResponse } from "./types/dfu/statusResponse";
 import { delay } from "./util/delay";
 import { DFUDeviceStatus } from "./protocol/dfu/transfer/deviceStatus";
 import { DFUFunctionalDescriptorAttribute } from "./protocol/dfu/functionalDescriptorAttribute";
+import { WebDFUError } from "./error";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -242,7 +243,7 @@ export class DFUDevice {
 			// We increment transactionNumber in the download call.
 			// This will increment after use, so there will still be a transaction 0.
 			const transferResult = await this.download(chunkData, transactionNumber++).catch(err => {
-				return Promise.reject(`Error during DFU download operation: ${err}`);
+				throw new WebDFUError(`Error during DFU download operation: ${err}`);
 			});
 
 			// Wait until the device re-enters the download idle state
@@ -251,7 +252,7 @@ export class DFUDevice {
 
 			// Check that the DFU status is okay.
 			if (dfuStatus?.bStatus != DFUDeviceStatus.OK) {
-				return Promise.reject(
+				throw new WebDFUError(
 					`DFU Download failed with state=${dfuStatus?.bState}, status=${dfuStatus?.bStatus}`
 				);
 			}
@@ -269,7 +270,7 @@ export class DFUDevice {
 		// (Inherited from old code)
 		// Send a download request with a buffer of length 0
 		await this.download(new ArrayBuffer(0), transactionNumber++).catch(err => {
-			return Promise.reject(`Error during final (zero-byte) DFU download: ${err}`);
+			throw new WebDFUError(`Error during final (zero-byte) DFU download: ${err}`);
 		});
 
 		// Finished writing!
@@ -298,7 +299,7 @@ export class DFUDevice {
 
 			// Check the DFU device status
 			if (dfuStatus?.bStatus != DFUDeviceStatus.OK) {
-				return Promise.reject(
+				throw new WebDFUError(
 					`DFU Manifest failed state=${dfuStatus.bState}, status=${dfuStatus.bStatus}`
 				);
 			}
@@ -338,7 +339,7 @@ export class DFUDevice {
 				console.log("device.reset() encounted a reset error but was expected.");
 			} else {
 				// Other error, reject the promise.
-				return Promise.reject(`Error during reset of manifestation: ${err}`);
+				throw new WebDFUError(`Error during reset of manifestation: ${err}`);
 			}
 		});
 	}
