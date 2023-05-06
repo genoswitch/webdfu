@@ -191,8 +191,22 @@ export class DFUDevice {
 	beginWrite(data: ArrayBuffer): TypedEmitter<WriteEvents> {
 		const emitter = new EventEmitter() as TypedEmitter<WriteEvents>;
 
-		// do_read
+		emitter.emit("init");
 
+		// Call doWrite (without awaiting)
+		this.doWrite(emitter, data)
+			.then(() => {
+				// When the doWrite promise resolves (completes), emit the end event.
+				console.log("doWrite finished successfully, emitting 'end'...");
+				emitter.emit("end");
+			})
+			.catch((err: unknown) => {
+				// When the doWrite promise is rejected (errors), emit the error event.
+				console.log(`doWrite encountered error: ${err}`);
+				emitter.emit("error", err);
+			});
+
+		// This allows us to return the emitter while the function is still running
 		return emitter;
 	}
 
@@ -202,10 +216,10 @@ export class DFUDevice {
 		let transactionNumber = 0;
 
 		// Alias function to emit a progress event
-		const sendProgress = () => process.emit("progress", bytesSent, expectedSize);
+		const sendProgress = () => process.emit("write/progress", bytesSent, expectedSize);
 
 		// Emit the start event
-		process.emit("start");
+		process.emit("write/start");
 
 		while (bytesSent < expectedSize) {
 			// Determine how many bytes still need to be sent.
@@ -259,5 +273,10 @@ export class DFUDevice {
 
 		// Finished writing!
 		// NEXT: Send end event, handle reset/manifestationTolerance.
+
+		// Emit the start event
+		process.emit("write/finish", bytesSent);
+
+		// Manifestation time
 	}
 }
