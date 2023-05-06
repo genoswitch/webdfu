@@ -30,7 +30,7 @@ export class DeviceBootstrapper {
 		if (!this.device.opened) await this.device.open();
 
 		// Claim the DFU interface if not already claimed.
-		if (this.interface.claimed) await this.device.claimInterface(this.interface.interfaceNumber);
+		if (!this.interface.claimed) await this.device.claimInterface(this.interface.interfaceNumber);
 
 		this.functionalDescriptor = await this.getDFUFunctionalDescriptor();
 
