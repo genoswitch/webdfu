@@ -10,6 +10,7 @@ import { DFUFunctionalDescriptor } from "./types/dfu/functionalDescriptor";
 import { DFUStatusResponse } from "./types/dfu/statusResponse";
 import { delay } from "./util/delay";
 import { DFUDeviceStatus } from "./protocol/dfu/transfer/deviceStatus";
+import { DFUFunctionalDescriptorAttribute } from "./protocol/dfu/functionalDescriptorAttribute";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -278,5 +279,67 @@ export class DFUDevice {
 		process.emit("write/finish", bytesSent);
 
 		// Manifestation time
+
+		if (
+			this.functionalDescriptor.isSupported(DFUFunctionalDescriptorAttribute.MANIFESTATION_TOLERANT)
+		) {
+			// (Inherited from old code)
+			// Transition to `MANIFEST_SYNC` state
+
+			// Wait until the device returns to IDLE
+			// If the device is not really manifestation tolerant, it may transition to MANIFEST_WAIT_RESET instead.
+			const dfuStatus = await this.pollUntil(
+				state => state == DFUDeviceState.dfuIDLE || state == DFUDeviceState.dfuMANIFEST_WAIT_RESET
+			);
+
+			// (Inherited comment)
+			// if dfu_status.state == DFUDeviceState.dfuMANIFEST_WAIT_RESET
+			// => Device transitioned to MANIFEST_WAIT_RESET even though it is manifestation tolerant
+
+			// Check the DFU device status
+			if (dfuStatus?.bStatus != DFUDeviceStatus.OK) {
+				return Promise.reject(
+					`DFU Manifest failed state=${dfuStatus.bState}, status=${dfuStatus.bStatus}`
+				);
+			}
+
+			// Old code had pollUntil in a catch which had the following code.
+			// This code is ported across in a comment for future reference.
+			// TODO: Check that these catches still exist / are handled somewhere.
+			/**
+			 * } catch (error) {
+				if (
+					error.endsWith("ControlTransferIn failed: NotFoundError: Device unavailable.") ||
+					error.endsWith("ControlTransferIn failed: NotFoundError: The device was disconnected.")
+				) {
+					this.log.warning("Unable to poll final manifestation status");
+				} else {
+					throw new WebDFUError("Error during DFU manifest: " + error);
+				}
+			}
+			 */
+		} else {
+			// Device reports that it is NOT manifestation tolerant
+
+			// (Inherited) Try polling once to initiate manifestation
+			await this.getStatus().catch(() => null);
+			// TODO: Following code suggests the devie state would possibly be MANIFEST_WAIT_RESET here?
+			// (Inherited code does not use the returned value, only catches it to escape the error.)
+		}
+
+		// Reset to exit MANIFEST_WAIT_RESET
+		await this.device.reset().catch(err => {
+			if (
+				err == "NetworkError: Unable to reset the device." ||
+				err == "NotFoundError: Device unavailable." ||
+				err == "NotFoundError: The device was disconnected."
+			) {
+				// (Inherited): Ignore reset error
+				console.log("device.reset() encounted a reset error but was expected.");
+			} else {
+				// Other error, reject the promise.
+				return Promise.reject(`Error during reset of manifestation: ${err}`);
+			}
+		});
 	}
 }
