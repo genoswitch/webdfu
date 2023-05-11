@@ -14,6 +14,7 @@ import { DFUFunctionalDescriptorAttribute } from "./protocol/dfu/functionalDescr
 import { WebDFUError } from "./error";
 import { DFUModeInterfaceDescriptor } from "./types/dfu/modeInterfaceDescriptor";
 import { USBConfigurationDescriptor } from "./types/usb";
+import { ensureError } from "./util/ensureError";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -344,11 +345,17 @@ export class DFUDevice {
 		}
 
 		// Reset to exit MANIFEST_WAIT_RESET
-		await this.device.reset().catch(err => {
+		await this.device.reset().catch((err: Error) => {
 			if (
-				err == "NetworkError: Unable to reset the device." ||
-				err == "NotFoundError: Device unavailable." ||
-				err == "NotFoundError: The device was disconnected."
+				ensureError(
+					err,
+					"NetworkError",
+					"Failed to execute 'reset' on 'USBDevice': Unable to reset the device."
+				) ||
+				// NOTE: I have not been able to get these two errors to appear.
+				// They have been retained/inherited from the previous (upstream) version of this project
+				ensureError(err, "NotFoundError", "Device unavailable.") ||
+				ensureError(err, "NotFoundError", "The device was disconnected.")
 			) {
 				// (Inherited): Ignore reset error
 				console.log("device.reset() encounted a reset error but was expected.");
