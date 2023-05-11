@@ -18,6 +18,10 @@ export const findInterface = (
 		return matches[0] as USBInterface;
 	}
 
+	if (matches.length == 0) {
+		throw new Error("No matches found. Is this a DFU device?");
+	}
+
 	// Unexpected number of matches found
 	throw new Error("Unexpected number of matches found.");
 };
