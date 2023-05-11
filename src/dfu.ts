@@ -12,20 +12,28 @@ import { delay } from "./util/delay";
 import { DFUDeviceStatus } from "./protocol/dfu/transfer/deviceStatus";
 import { DFUFunctionalDescriptorAttribute } from "./protocol/dfu/functionalDescriptorAttribute";
 import { WebDFUError } from "./error";
+import { DFUModeInterfaceDescriptor } from "./types/dfu/modeInterfaceDescriptor";
+import { USBConfigurationDescriptor } from "./types/usb";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
 	private readonly interface: USBInterface;
 	private readonly functionalDescriptor: DFUFunctionalDescriptor;
+	private readonly configurationDescriptor: USBConfigurationDescriptor;
+	private readonly interfaceDescriptor: DFUModeInterfaceDescriptor;
 
 	constructor(
 		device: USBDevice,
 		iface: USBInterface,
-		functionalDescriptor: DFUFunctionalDescriptor
+		functionalDescriptor: DFUFunctionalDescriptor,
+		configurationDescriptor: USBConfigurationDescriptor,
+		interfaceDescriptor: DFUModeInterfaceDescriptor
 	) {
 		this.device = device;
 		this.interface = iface;
 		this.functionalDescriptor = functionalDescriptor;
+		this.configurationDescriptor = configurationDescriptor;
+		this.interfaceDescriptor = interfaceDescriptor;
 
 		console.log("(DFUDevice) constructor.");
 	}
