@@ -60,6 +60,13 @@ export class DFUDevice {
 		return this.functionalDescriptor.wTransferSize;
 	}
 
+	/**
+	 * The target memory segement is specified in the {@link DFUModeInterfaceDescriptor | DFU interface descriptor's} {@link DFUModeInterfaceDescriptor.bAlternateSetting | bAlternateSetting} field.
+	 */
+	get memorySegment(): number {
+		return this.interfaceDescriptor.bAlternateSetting;
+	}
+
 	//#region USB Transfer helper functions.
 
 	/**
