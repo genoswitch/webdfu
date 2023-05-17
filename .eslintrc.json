@@ -8,5 +8,8 @@
 		"ecmaVersion": 2020,
 		"sourceType": "module"
 	},
-	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"]
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+	"rules": {
+		"@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "allow-with-description" }]
+	}
 }
