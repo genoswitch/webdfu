@@ -1,5 +1,6 @@
-// Import DFUClassSpecificRequest for typedoc IntelliSense (line 60)
+// Import DFUClassSpecificRequest for typedoc IntelliSense (line 61)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-ignore: Imported for IntelliSense only
 import { DFUClassSpecificRequest } from "../requests/classSpecificRequest";
 
 /**
