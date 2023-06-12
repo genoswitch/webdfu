@@ -15,6 +15,7 @@ import { WebDFUError } from "./error";
 import { DFUModeInterfaceDescriptor } from "./types/dfu/modeInterfaceDescriptor";
 import { USBConfigurationDescriptor } from "./types/usb";
 import { ensureError } from "./util/ensureError";
+import { DFUStateResponse } from "./types/dfu/stateResponse";
 
 export class DFUDevice {
 	private readonly device: USBDevice;
@@ -200,6 +201,28 @@ export class DFUDevice {
 	//		 Check for OK dfu status after request is sent.
 	clearState(): Promise<USBOutTransferResult> {
 		return this.requestOut(DFUClassSpecificRequest.DFU_CLRSTATUS);
+	}
+
+	/**
+	 * Request information about the current state of the device.
+	 *
+	 * @remarks
+	 *
+	 * The state reported/returned is the current state of the device.
+	 * There is no change in state upon transmission of the response.
+	 *
+	 * @returns A {@link Promise} that resolves to a {@link DFUStateResponse} object containing the current state.
+	 */
+	async getState(): Promise<DFUStateResponse> {
+		const result = await this.requestIn(DFUClassSpecificRequest.DFU_GETSTATE, 1).catch(err => {
+			return Promise.reject(`DFU_GETSTATE failed: ${err}`);
+		});
+		if (!result.data) {
+			return Promise.reject("DFU_GETSTATE returned a USBTransferInResult with no data.");
+		}
+
+		// We have checked for result.data so TS no longer views it as optional.
+		return new DFUStateResponse(result.data);
 	}
 
 	/**
