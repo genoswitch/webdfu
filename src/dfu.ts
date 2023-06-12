@@ -188,6 +188,21 @@ export class DFUDevice {
 	}
 
 	/**
+	 * Request the device to exit from the
+	 * {@link DFUDeviceState.dfuERROR | DFU_ERROR} state and transition to the
+	 * {@link DFUDeviceState.dfuIDLE | DFU_IDLE} state.
+	 *
+	 * This request returns no data.
+	 *
+	 * @returns A {@link Promise} that resolves to the {@link USBOutTransferResult} for this request.
+	 */
+	// TODO: Spec: "The device sets the OK status on receipt of this request."
+	//		 Check for OK dfu status after request is sent.
+	clearState(): Promise<USBOutTransferResult> {
+		return this.requestOut(DFUClassSpecificRequest.DFU_CLRSTATUS);
+	}
+
+	/**
 	 * Continuously poll the USB device until the device state matches that of the predicate.
 	 *
 	 * Eg. After a download request, poll until device is IDLE (finished processing)
