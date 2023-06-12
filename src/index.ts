@@ -81,6 +81,10 @@ export class WebDFU {
 			this.events.emit("disconnect", error);
 			throw error;
 		}
+    
+    if (desc) {
+			this.properties = desc;
+		}
 
 		const intrf = this.interfaces[interfaceIndex];
 
@@ -92,10 +96,6 @@ export class WebDFU {
 		// The memory descriptor is a DFuSe-only feature - do not attempt to parse it if we are not using a DFuSe compatible device.
 		if (this.currentInterfaceSettings.name && this.type == DFUVersion.DfuSe) {
 			this.dfuseMemoryInfo = parseMemoryDescriptor(this.currentInterfaceSettings.name);
-		}
-
-		if (desc) {
-			this.properties = desc;
 		}
 
 		try {
@@ -1003,7 +1003,7 @@ export class WebDFU {
 		let status = await this.poll_until(state => state != DFUDeviceState.dfuDNBUSY);
 
 		if (status.status != dfuCommands.STATUS_OK) {
-			throw new WebDFUError("Special DfuSe command " + command + " failed");
+			throw new WebDFUError("Special DfuSe command " + commandNames[command] + " failed");
 		}
 	}
 }
