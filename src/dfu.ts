@@ -1,7 +1,7 @@
 import TypedEmitter from "typed-emitter";
 import { EventEmitter } from "events";
 
-import { WriteEvents } from "./events";
+import { ReadEvents, WriteEvents } from "./events";
 import { DFUClassSpecificRequest } from "./protocol/dfu/requests/classSpecificRequest";
 import { BlockNumber } from "./protocol/dfu/transfer/block";
 import { DFUDeviceState } from "./protocol/dfu/transfer/deviceState";
@@ -287,6 +287,27 @@ export class DFUDevice {
 		return emitter;
 	}
 
+	beginRead(firstBlock = 0, maxSize = Infinity): TypedEmitter<ReadEvents> {
+		const emitter = new EventEmitter() as TypedEmitter<ReadEvents>;
+
+		emitter.emit("init");
+
+		this.doRead(emitter, firstBlock, maxSize)
+			.then(() => {
+				// when the doRead promise resolves (completes), emit the end event.
+				console.log("doRead finished successfully, emitting 'end'...");
+				emitter.emit("end");
+			})
+			.catch((err: unknown) => {
+				// When the doRead promise is rejected (errors), emit the error event.
+				console.log(`doRead encountered error: ${err}`);
+				emitter.emit("error", "err");
+			});
+
+		// This allows us to return the emitter while the function is still running
+		return emitter;
+	}
+
 	private async doWrite(process: TypedEmitter<WriteEvents>, data: ArrayBuffer): Promise<void> {
 		let bytesSent = 0;
 		const expectedSize = data.byteLength;
@@ -423,5 +444,56 @@ export class DFUDevice {
 				throw new WebDFUError(`Error during reset of manifestation: ${err}`);
 			}
 		});
+	}
+
+	private async doRead(
+		process: TypedEmitter<ReadEvents>,
+		firstBlock: number,
+		// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+		maxSize: number = Infinity
+	) {
+		const blocks: USBInTransferResult[] = [];
+
+		let bytesRead = 0;
+		let transactionNumber = firstBlock;
+
+		// Emit the start event
+		process.emit("read/start");
+
+		let result: USBInTransferResult;
+		let bytesToRead;
+		do {
+			bytesToRead = Math.min(this.transferSize, maxSize - bytesRead);
+
+			result = await this.upload(bytesToRead, transactionNumber++);
+
+			if (result.data?.byteLength) {
+				if (result.data?.byteLength > 0 && result.status == "ok") {
+					blocks.push(result);
+					bytesRead += result.data?.byteLength;
+				}
+
+				process.emit("read/progress", bytesRead, result);
+			} else {
+				// error: byteLength not set
+			}
+		} while (bytesRead < maxSize && result.data?.byteLength == bytesToRead);
+
+		if (bytesRead == maxSize) {
+			await this.abortToIdle();
+		}
+
+		// Convert the array of USBInTransferResult(s) to an array of binary data.
+		const binaryBlocks: DataView[] = [];
+		blocks.forEach(block => {
+			if (block.data) {
+				binaryBlocks.push(block.data);
+			}
+		});
+
+		// Return the data as a blob.
+		const blob = new Blob(binaryBlocks, { type: "application/octet-stream" });
+
+		process.emit("read/finish", bytesRead, blocks, blob);
 	}
 }
