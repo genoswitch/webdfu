@@ -170,6 +170,27 @@ export class DFUDevice {
 	}
 
 	/**
+	 * Request the device to exit from it's current state and return to the {@link DFUDeviceState.dfuIDLE | DFU_IDLE} state
+	 */
+	// TODO: Spec: "The device sets the OK status on receipt of this request."
+	//		 Check for OK dfu status after request is sent.
+	private async abortToIdle() {
+		// Send abort request
+		await this.requestOut(DFUClassSpecificRequest.DFU_ABORT);
+
+		let state = await this.getState();
+		if (state.bState == DFUDeviceState.dfuERROR) {
+			await this.clearState();
+			state = await this.getState();
+		}
+		if (state.bState != DFUDeviceState.dfuIDLE) {
+			throw new WebDFUError(
+				`Device failed to return to idle state after abort. Current state: ${state.bState}`
+			);
+		}
+	}
+
+	/**
 	 * Send a {@link DFUClassSpecificRequest.DFU_GETSTATUS | DFU_GETSTATUS} request to the device.
 	 *
 	 * @returns A {@link Promise} that resolves to a {@link DFUStatusResponse} containing the response payload
