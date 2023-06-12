@@ -1,4 +1,3 @@
-import { WebDFUInterfaceSubDescriptor } from "../../core";
 import { USBDescriptor } from "./descriptor";
 
 /**
@@ -116,7 +115,7 @@ export class USBInterfaceDescriptor extends USBDescriptor {
 
 	// The existing webDFU code has these descriptor objects.
 	// This behaviour may be changed in the future but for now it will be ported across.
-	descriptors: (USBDescriptor | WebDFUInterfaceSubDescriptor)[];
+	descriptors: USBDescriptor[];
 
 	/**
 	 * Parse a USB Interface Descriptor from the given `DataView`.

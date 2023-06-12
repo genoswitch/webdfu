@@ -1,4 +1,3 @@
-import { WebDFUInterfaceSubDescriptor } from "../../core";
 import { USBConfigurationDescriptorAttribute } from "../../protocol/usb/configurationDescriptorAttribute";
 import { USBDescriptorType } from "../../protocol/usb/descriptorTypes";
 import { DFUFunctionalDescriptor } from "../dfu/functionalDescriptor";
@@ -118,7 +117,7 @@ export class USBConfigurationDescriptor extends USBDescriptor {
 
 	// The existing webDFU code has these descriptor objects.
 	// This behaviour may be changed in the future but for now it will be ported across.
-	descriptors: (USBDescriptor | WebDFUInterfaceSubDescriptor)[];
+	descriptors: USBDescriptor[];
 
 	/**
 	 * Parse a USB Configuration Descriptor from the given `DataView`, as well as any "sub-descriptors" in the DataView.
