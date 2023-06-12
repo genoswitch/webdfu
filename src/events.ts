@@ -44,3 +44,27 @@ export type WriteEvents = LifecycleEvents & {
 	 */
 	"write/finish": (bytesSent: number) => void;
 };
+
+export type ReadEvents = LifecycleEvents & {
+	/**
+	 * Event called when the read process begins.
+	 */
+	"read/start": () => void;
+
+	/**
+	 * Event emitted to indicate the progress of a read process.
+	 *
+	 * @param bytesRead The amount of bytes read so far
+	 * @param block The last block ({@link USBInTransferResult}) that has been read
+	 */
+	"read/progress": (bytesRead: number, block: USBInTransferResult) => void;
+
+	/**
+	 * Event emitted to indicate the end of a read process.
+	 *
+	 * @param bytesRead The amount of bytes read
+	 * @param blocks An array of {@link USBInTransferResult}s from the read process
+	 * @param data A {@link Blob} containing the raw data that has been read from the device
+	 */
+	"read/finish": (bytesRead: number, blocks: USBInTransferResult[], data: Blob) => void;
+};
