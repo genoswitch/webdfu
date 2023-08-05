@@ -3,12 +3,7 @@
 	"version": "0.1.5",
 	"description": "Driver for working with DFU in a browser over Web USB",
 	"type": "module",
-	"module": "dist/index.js",
-	"main": "dist/index.cjs",
-	"exports": {
-		"require": "./dist/index.cjs",
-		"import": "./dist/index.js"
-	},
+	"main": "src/index.ts",
 	"files": [
 		"dist",
 		"LICENSE",
