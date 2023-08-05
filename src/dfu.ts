@@ -20,7 +20,7 @@ import { DFUStateResponse } from "./types/dfu/stateResponse";
 export class DFUDevice {
 	private readonly device: USBDevice;
 	private readonly interface: USBInterface;
-	private readonly functionalDescriptor: DFUFunctionalDescriptor;
+	public readonly functionalDescriptor: DFUFunctionalDescriptor;
 	private readonly configurationDescriptor: USBConfigurationDescriptor;
 	private readonly interfaceDescriptor: DFUModeInterfaceDescriptor;
 
