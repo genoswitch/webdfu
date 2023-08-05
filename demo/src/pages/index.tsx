@@ -5,6 +5,7 @@ import { Button, Card, CardContent, Typography } from "@mui/material";
 import { DeviceBootstrapper } from "dfu";
 import { DFUDevice } from "../../../src/dfu";
 import DeviceCard from "../components/deviceCard";
+import DownloadCard from "../components/downloadCard";
 
 export default class Demo extends React.Component {
 
@@ -45,6 +46,7 @@ export default class Demo extends React.Component {
                 <>
                     {this.dfuDevice == undefined ? <Button variant="outlined" onClick={() => this.handleConnect()}>Connect</Button> : <Button variant="contained" onClick={() => this.handleDisconnect()}>Disconnect</Button>}
                     <DeviceCard device={this.device} dfuDevice={this.dfuDevice} />
+                    <DownloadCard device={this.device} dfuDevice={this.dfuDevice} />
                 </>
             )
         } else {
