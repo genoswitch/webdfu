@@ -17,7 +17,7 @@ export class DeviceBootstrapper {
 	private interfaceDescriptor?: DFUModeInterfaceDescriptor;
 
 	// In TypeScript you can create and assign a class instance property like this!
-	constructor(device: USBDevice, iface: USBInterface) {
+	constructor(device: USBDevice, iface?: USBInterface) {
 		this.device = device;
 
 		// If a DFU interface was not passed, find the correct DFU interface to use.
