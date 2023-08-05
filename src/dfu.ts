@@ -63,6 +63,10 @@ export class DFUDevice {
 		return DFUVersion.DFU_1_0;
 	}
 
+	get attributes(): typeof DFUFunctionalDescriptorAttribute {
+		return this.functionalDescriptor.attributes;
+	}
+
 	get transferSize(): number {
 		return this.functionalDescriptor.wTransferSize;
 	}
