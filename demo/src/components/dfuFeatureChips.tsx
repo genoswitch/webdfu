@@ -29,12 +29,13 @@ type DFUFeatureChipsProps = {
 }
 
 const DFUFeatureChips = ({ dfuDevice }: DFUFeatureChipsProps): React.JSX.Element => {
+    console.log(dfuDevice.attributes)
     return (
         <>
-            <FeatureChip title="Download" isSupported={dfuDevice.attributes.CAN_DOWNLOAD} />
-            <FeatureChip title="Upload" isSupported={dfuDevice.attributes.CAN_UPLOAD} />
-            <FeatureChip title="Manifestation Tolerant" isSupported={dfuDevice.attributes.MANIFESTATION_TOLERANT} />
-            <FeatureChip title="Detach" isSupported={dfuDevice.attributes.WILL_DETACH} />
+            <FeatureChip title="Download" isSupported={dfuDevice.functionalDescriptor.isSupported(DFUFunctionalDescriptorAttribute.CAN_DOWNLOAD)} />
+            <FeatureChip title="Upload" isSupported={dfuDevice.functionalDescriptor.isSupported(DFUFunctionalDescriptorAttribute.CAN_UPLOAD)} />
+            <FeatureChip title="Manifestation Tolerant" isSupported={dfuDevice.functionalDescriptor.isSupported(DFUFunctionalDescriptorAttribute.MANIFESTATION_TOLERANT)} />
+            <FeatureChip title="Detach" isSupported={dfuDevice.functionalDescriptor.isSupported(DFUFunctionalDescriptorAttribute.WILL_DETACH)} />
         </>
     )
 }
