@@ -40,6 +40,11 @@ export class DFUDevice {
 		console.log("(DFUDevice) constructor.");
 	}
 
+	async close(): Promise<void> {
+		await this.device.releaseInterface(this.interface.interfaceNumber);
+		await this.device.close();
+	}
+
 	get type(): DFUVersion {
 		if (
 			this.functionalDescriptor.bcdDFUVersion == DFUVersion.DfuSe &&
