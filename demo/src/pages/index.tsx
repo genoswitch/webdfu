@@ -49,9 +49,13 @@ export default class Demo extends React.Component {
                 return (
                     <>
                         {this.dfuDevice == undefined ? <Button variant="outlined" onClick={() => this.handleConnect()}>Connect</Button> : <Button variant="contained" onClick={() => this.handleDisconnect()}>Disconnect</Button>}
-                        <DeviceCard device={this.device} dfuDevice={this.dfuDevice} />
-                        <DownloadCard device={this.device} dfuDevice={this.dfuDevice} />
-                        <UploadCard device={this.device} dfuDevice={this.dfuDevice} />
+                        <div style={{ paddingTop: 16 }}>
+                            <DeviceCard device={this.device} dfuDevice={this.dfuDevice} />
+                        </div><div style={{ paddingTop: 16 }}>
+                            <DownloadCard device={this.device} dfuDevice={this.dfuDevice} />
+                        </div ><div style={{ paddingTop: 16 }}>
+                            <UploadCard device={this.device} dfuDevice={this.dfuDevice} />
+                        </div >
                     </>
                 )
             } else {
