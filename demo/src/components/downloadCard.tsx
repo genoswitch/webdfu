@@ -51,7 +51,7 @@ const DownloadCard = ({ device, dfuDevice }: DownloadCardProps) => {
                     <div style={{ paddingTop: 16, paddingBottom: 16 }}>
                         <MuiFileInput value={file} onChange={handleChange} placeholder="Upload a file..." />
                     </div>
-                    <Button onClick={handleButtonClick} disabled={file == undefined}>Upload</Button>
+                    <Button onClick={handleButtonClick} disabled={file == undefined}>Download</Button>
                     <div style={{ paddingTop: 16, paddingBottom: 16 }}>
                         <LinearProgress variant="determinate" disabled={isNaN(progress) || done} value={isNaN(progress) ? 0 : progress} />
                     </div>
