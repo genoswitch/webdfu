@@ -1,16 +1,32 @@
 {
-	"name": "@dfu/demo",
+	"name": "web-dfu-demo",
+	"version": "0.0.1",
+	"private": true,
 	"scripts": {
-		"start": "parcel index.html --open chrome"
-	},
-	"devDependencies": {
-		"@types/file-saver": "^2.0.2"
+		"develop": "gatsby develop",
+		"start": "gatsby develop",
+		"build": "gatsby build",
+		"serve": "gatsby serve",
+		"clean": "gatsby clean",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"dfu": "../",
-		"file-saver": "^2.0.5"
+		"@emotion/react": "^11.11.1",
+		"@emotion/styled": "^11.11.0",
+		"@mui/icons-material": "^5.14.3",
+		"@mui/material": "^5.14.3",
+		"dfu": "file:..",
+		"file-saver": "^2.0.5",
+		"gatsby": "^5.10.0",
+		"mui-file-input": "^3.0.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
-	"browserslist": [
-		"last 1 Chrome version"
-	]
+	"devDependencies": {
+		"@types/file-saver": "^2.0.5",
+		"@types/node": "^20.2.6",
+		"@types/react": "^18.2.9",
+		"@types/react-dom": "^18.2.4",
+		"typescript": "^5.1.3"
+	}
 }

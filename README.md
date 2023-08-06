@@ -17,55 +17,35 @@ npm i dfu
 
 ## Usage
 
-Full example in: [webdfu/demo](https://github.com/Flipper-Zero/webdfu/tree/main/demo)
+Full example in: [webdfu/demo](https://github.com/genoswitch/webdfu/tree/main/demo)
 
 Basic example:
 
-```javascript
-import { WebDFU } from "dfu";
+````typescript
+import { DeviceBootstrapper } from "dfu";
 
-async function connect() {
-	// Load the device by WebUSB
-	const selectedDevice = await navigator.usb.requestDevice({ filters: [] });
 
-	// Create and init the WebDFU instance
-	const webdfu = new WebDFU(selectedDevice, { forceInterfacesName: true });
-	await webdfu.init();
+const connect = async () => {
+    const device = await navigator.usb.requestDevice({ filters: [] });
 
-	if (webdfu.interfaces.length == 0) {
-		throw new Error("The selected device does not have any USB DFU interfaces.");
-	}
+    const bootstrapper = new DeviceBootstrapper(device);
 
-	// Connect to first device interface
-	await webdfu.connect(0);
+    const dfuDevice = await bootstrapper.init();
 
-	console.log({
-		Version: webdfu.properties.DFUVersion.toString(16),
-		CanUpload: webdfu.properties.CanUpload,
-		CanDownload: webdfu.properties.CanDownload,
-		TransferSize: webdfu.properties.TransferSize,
-		DetachTimeOut: webdfu.properties.DetachTimeOut,
-	});
+    //  Read firmware from devie
+    const readEvents = dfuDevice.beginRead();
+    readEvents.on("read/finish", (bytesRead, blocks, data) => {
+        // save the data (blob)
+        console.log("Successfully read firmware from device")
+    })
 
-	// Read firmware from device
-	try {
-		const firmwareFile = await webdfu.read();
+    // Write firmware to device
+    const firmwareFile = new ArrayBuffer(1024);
+    const writeEvents = dfuDevice.beginWrite(firmwareFile);
 
-		console.log("Read: ", firmwareFile);
-	} catch (error) {
-		console.error(error);
-	}
-
-	// Write firmware in device
-	try {
-		// Your firmware in binary mode
-		const firmwareFile = new ArrayBuffer("");
-		await webdfu.write(1024, firmwareFile);
-
-		console.log("Written!");
-	} catch (error) {
-		console.error(error);
-	}
+    writeEvents.on("write/finish", (bytesSent) => {
+        console.log("Sucessfully written new firmware to device.")
+    })
 }
 
 /*
@@ -73,5 +53,5 @@ async function connect() {
   Add the button in your html and run the WebDFu after click in button.
   In HTML: <button id="connect-button">Connect</button>
 */
-document.getElementById("connect-button").addEventListener("click", connect);
-```
+document.getElementById("connect-button").addEventListener("click", connect);```
+````
