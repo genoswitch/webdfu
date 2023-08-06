@@ -1,5 +1,5 @@
 {
-	"name": "dfu",
+	"name": "dfu-next",
 	"version": "0.1.5",
 	"description": "Driver for working with DFU in a browser over Web USB",
 	"type": "module",
