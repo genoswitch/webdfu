@@ -5,10 +5,9 @@
 	"type": "module",
 	"main": "src/index.ts",
 	"files": [
-		"dist",
+		"src",
 		"LICENSE",
 		"README.md",
-		"CHANGELOG.md",
 		"package.json",
 		"package-lock.json"
 	],
