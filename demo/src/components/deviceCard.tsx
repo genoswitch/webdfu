@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Card, CardContent, Typography } from "@mui/material";
 
-import { DFUDevice } from "../../../src/dfu";
+import { DFUDevice } from "dfu";
 
 import DFUVersionChip from "../components/dfuVersionChip";
 import DFUFeatureChips from "../components/dfuFeatureChips";

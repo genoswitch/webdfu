@@ -3,7 +3,7 @@ import * as React from "react";
 import { Button, Card, CardContent, LinearProgress, TextField, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input'
 
-import { DFUDevice } from "../../../src/dfu";
+import { DFUDevice } from "dfu";
 
 
 type DownloadCardProps = {

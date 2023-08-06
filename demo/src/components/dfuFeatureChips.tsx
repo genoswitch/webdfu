@@ -5,7 +5,8 @@ import { Chip } from "@mui/material";
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { DFUFunctionalDescriptorAttribute } from "../../../src/protocol/dfu/functionalDescriptorAttribute";
+
+import { DFUFunctionalDescriptorAttribute } from "dfu";
 
 
 type FeatureChipProps = {

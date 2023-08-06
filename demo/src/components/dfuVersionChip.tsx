@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import { DFUDevice } from "../../../src/dfu";
 import { Chip } from "@mui/material";
-import { DFUVersion } from "../../../src/protocol/version";
+
+import { DFUDevice, DFUVersion } from "dfu";
 
 type DFUVersionChipProps = {
     dfuDevice: DFUDevice
