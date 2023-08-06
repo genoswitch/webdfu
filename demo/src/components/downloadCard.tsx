@@ -25,6 +25,7 @@ const DownloadCard = ({ device, dfuDevice }: DownloadCardProps) => {
             const events = dfuDevice.beginWrite(await file.arrayBuffer())
 
             events.on("write/start", () => {
+                setIsDone(false);
                 setProgress(0);
             })
             events.on("write/progress", (bytesSent, expectedSize) => {
