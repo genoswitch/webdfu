@@ -44,19 +44,23 @@ const DownloadCard = ({ device, dfuDevice }: DownloadCardProps) => {
                         Firmware Download (to USB device)
                     </Typography>
                     {/** TextField Props: see https://mui.com/material-ui/react-text-field/#type-quot-number-quot */}
-                    <TextField inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} label="Transfer Size" variant="outlined" defaultValue={64} />
-                    <br />
-                    <br />
-                    <MuiFileInput value={file} onChange={handleChange} placeholder="Upload a file..." />
-                    <br />
-                    <br />
+                    <div style={{ paddingTop: 16, paddingBottom: 16 }}>
+                        <TextField inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} label="Transfer Size" variant="outlined" defaultValue={64} />
+                    </div>
+                    <div style={{ paddingTop: 16, paddingBottom: 16 }}>
+                        <MuiFileInput value={file} onChange={handleChange} placeholder="Upload a file..." />
+                    </div>
                     <Button onClick={handleButtonClick} disabled={file == undefined}>Upload</Button>
-                    <br />
-                    <br />
-
-                    <LinearProgress variant="determinate" disabled={isNaN(progress) || done} value={isNaN(progress) ? 0 : progress} />
-
-                    {done ? "Done!" : "not done."}
+                    <div style={{ paddingTop: 16, paddingBottom: 16 }}>
+                        <LinearProgress variant="determinate" disabled={isNaN(progress) || done} value={isNaN(progress) ? 0 : progress} />
+                    </div>
+                    {done ?
+                        <>
+                            <Typography>
+                                Download completed successfully.
+                            </Typography>
+                        </>
+                        : undefined}
                 </CardContent>
             </Card>
         )
