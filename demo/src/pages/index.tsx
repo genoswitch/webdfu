@@ -41,16 +41,22 @@ export default class Demo extends React.Component {
     }
 
     render(): React.JSX.Element {
-        if (navigator.usb) {
-            return (
-                <>
-                    {this.dfuDevice == undefined ? <Button variant="outlined" onClick={() => this.handleConnect()}>Connect</Button> : <Button variant="contained" onClick={() => this.handleDisconnect()}>Disconnect</Button>}
-                    <DeviceCard device={this.device} dfuDevice={this.dfuDevice} />
-                    <DownloadCard device={this.device} dfuDevice={this.dfuDevice} />
-                </>
-            )
+        // use typeof to check if navigator is available for gatsby
+        // https://github.com/twilio/twilio-video.js/issues/997
+        if (typeof navigator !== 'undefined') {
+            if (navigator.usb) {
+                return (
+                    <>
+                        {this.dfuDevice == undefined ? <Button variant="outlined" onClick={() => this.handleConnect()}>Connect</Button> : <Button variant="contained" onClick={() => this.handleDisconnect()}>Disconnect</Button>}
+                        <DeviceCard device={this.device} dfuDevice={this.dfuDevice} />
+                        <DownloadCard device={this.device} dfuDevice={this.dfuDevice} />
+                    </>
+                )
+            } else {
+                return (<>WebUSB is not supported.</>)
+            }
         } else {
-            return (<>WebUSB is not supported.</>)
+            return (<>Navigator is not available.</>)
         }
 
     }
