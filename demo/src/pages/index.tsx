@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Button, Card, CardContent, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 
 import { DeviceBootstrapper, DFUDevice } from "dfu";
 
