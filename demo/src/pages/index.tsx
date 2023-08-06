@@ -6,6 +6,7 @@ import { DeviceBootstrapper, DFUDevice } from "dfu";
 
 import DeviceCard from "../components/deviceCard";
 import DownloadCard from "../components/downloadCard";
+import UploadCard from "../components/uploadCard";
 
 export default class Demo extends React.Component {
 
@@ -50,6 +51,7 @@ export default class Demo extends React.Component {
                         {this.dfuDevice == undefined ? <Button variant="outlined" onClick={() => this.handleConnect()}>Connect</Button> : <Button variant="contained" onClick={() => this.handleDisconnect()}>Disconnect</Button>}
                         <DeviceCard device={this.device} dfuDevice={this.dfuDevice} />
                         <DownloadCard device={this.device} dfuDevice={this.dfuDevice} />
+                        <UploadCard device={this.device} dfuDevice={this.dfuDevice} />
                     </>
                 )
             } else {
