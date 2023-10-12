@@ -1,0 +1,19 @@
+name: Mirror
+
+on: ["push", "delete"]
+
+jobs:
+  merge:
+    name: Merge
+    if: github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.MERGE_PAT }}
+          repository: genoswitch/software-judging
+          event-type: merge_repo
+          client-payload: '{"job": "merge-v2", "repo": "webdfu", "branch": "main", "path": "hardware/webdfu"}'
